@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* index.css */
+
+/* Reset básico para garantir uma base consistente */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; /* Definindo a fonte base */
+}
+
+body {
+  font-family: 'Roboto', sans-serif; /* Definindo uma fonte padrão */
+  line-height: 1.5; /* Melhora a legibilidade */
+  background-color: #f9fafb; /* Cor de fundo padrão */
+  color: #333; /* Cor do texto padrão */
+}
+
+/* Estilos globais */
+a {
+  text-decoration: none; /* Remover sublinhado dos links */
+  color: inherit; /* Herda a cor do texto */
+}
+
+ul {
+  list-style: none; /* Remove marcadores de listas */
+}
+
+button {
+  cursor: pointer; /* Altera o cursor para indicar que é clicável */
+}
+
+/* Estilos para inputs */
+input,
+textarea {
+  font-family: inherit; /* Garante que a fonte dos inputs seja a mesma do body */
+}
+
+nav {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}

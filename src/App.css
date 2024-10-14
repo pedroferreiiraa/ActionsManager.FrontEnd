@@ -1,0 +1,46 @@
+/* app.css */
+
+/* Estilos básicos e reset para o aplicativo */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh; /* Garante que o corpo ocupe toda a altura da tela */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centraliza o conteúdo verticalmente */
+  align-items: center; /* Centraliza o conteúdo horizontalmente */
+}
+
+.container {
+  width: 100%; /* Garante que a largura do contêiner ocupe 100% */
+  max-width: 1200px; /* Define uma largura máxima */
+  padding: 20px; /* Adiciona espaçamento */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 1rem; /* Espaçamento inferior para títulos */
+}
+
+p {
+  margin-bottom: 1rem; /* Espaçamento inferior para parágrafos */
+}
+
+button {
+  border: none; /* Remove borda padrão */
+  background: none; /* Remove fundo padrão */
+}
+
+/* Estilo para listas */
+ul, ol {
+  padding-left: 1.5rem; /* Indentação para listas */
+}
+
+/* Estilo para imagens */
+img {
+  max-width: 100%; /* Garante que as imagens não extrapolem a largura do contêiner */
+  height: auto; /* Mantém a proporção */
+}
