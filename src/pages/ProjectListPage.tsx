@@ -8,6 +8,19 @@ interface Project {
   status: number; // Inclua o status se necessário
 }
 
+const statusAliases: Record<number, string> = {
+  0: 'Criado',
+  1: 'Em progresso',
+  2: 'Suspenso',
+  3: 'Cancelado',
+  4: 'Finalizado',
+};
+
+// Função que retorna o alias do status
+const getStatusAlias = (status: number): string => {
+  return statusAliases[status] || 'Unknown Status';
+};
+
 const ProjectListPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +31,7 @@ const ProjectListPage: React.FC = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch('http://localhost:5168/api/projects', {
+        const response = await fetch('http://192.168.16.240:5000/api/projects', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -60,7 +73,7 @@ const ProjectListPage: React.FC = () => {
           projects.map((project) => (
             <div key={project.id} className="border rounded p-4">
               <h2 className="text-lg font-semibold">{project.title}</h2>
-              <p className="text-gray-700">Status: {project.status}</p>
+              <p className="text-gray-700">Status: {getStatusAlias(project.status)}</p>
               <button 
                 className="mt-2 bg-blue-800 text-white py-1 px-3 rounded hover:bg-blue-700"
                 onClick={() => handleDetailsClick(project.id)} // Chamando a função ao clicar

@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Typography, Box, Container, Alert, CircularProgress } from '@mui/material';
+import { LockOutlined } from '@mui/icons-material';
+import Avatar from '@mui/material/Avatar';
+import Grid from '@mui/material/Grid';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
 
     try {
-      const response = await fetch('http://localhost:5168/api/users/login', {
+      const response = await fetch('http://192.168.16.240:5000/api/users/login', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -29,53 +36,85 @@ const Login: React.FC = () => {
       navigate('/home'); // Redireciona para a Home
     } catch (error: any) {
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-blue-50">
-      <form
-        className="bg-white p-8 rounded shadow-md w-96"
-        onSubmit={handleLogin}
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
       >
-        <h2 className="text-2xl font-bold text-center text-blue-800 mb-6">
+        {/* Avatar Icon for Login */}
+        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+          <LockOutlined />
+        </Avatar>
+        <Typography component="h1" variant="h5">
           Login
-        </h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700">
-            Usuário
-          </label>
-          <input
-            type="text"
-            id="email"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700">
-            Senha
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-800 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Entrar
-        </button>
-      </form>
-    </div>
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+            {error}
+          </Alert>
+        )}
+        {loading ? (
+          // Skeleton Loader while logging in
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          // Login Form
+          <Box component="form" onSubmit={handleLogin} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                {/* Email Input */}
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Usuário"
+                  name="email"
+                  autoComplete="email"
+                  variant="outlined"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                {/* Password Input */}
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Senha"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  variant="outlined"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Entrar
+            </Button>
+          </Box>
+        )}
+      </Box>
+    </Container>
   );
 };
 
