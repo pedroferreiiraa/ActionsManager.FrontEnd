@@ -169,7 +169,7 @@ const Home = () => {
       {/* Boas-vindas e atalhos */}
       <div className="mb-4 md:mb-6">
         <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-4">
-          <button onClick={addProject} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
+          <button onClick={() => navigate('/adicionar-projeto')} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
             Adicionar Projeto
           </button>
           <button onClick={() => navigate('/listar-projetos')} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
@@ -211,7 +211,7 @@ const Home = () => {
         <h2 className="text-lg md:text-xl font-bold mb-2 md:mb-4">Últimos Projetos Adicionados</h2>
         <div className="bg-white p-2 md:p-4 rounded shadow">
           <ul>
-            {projects.slice(0, 3).map((project) => (
+            {projects.slice(0, 5).map((project) => (
               <li key={project.id} className="flex flex-col md:flex-row md:justify-between md:items-center py-2 border-b">
                 <span className="font-bold text-sm md:text-base mb-2 md:mb-0">{project.title}</span>
                 <button onClick={() => navigate(`/projeto/${project.id}`)} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:ml-4">
@@ -241,21 +241,3 @@ const Home = () => {
 };
 
 export default Home;
-
-// App.js (exemplo de uso)
-// import Home from './components/Home';
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// function App() {
-//   return (
-//     <Router>
-//       <div>
-//         <Navbar />
-//         <Routes>
-//           <Route path="/" element={<Home />} />
-{/* Outras rotas */ }
-//         </Routes>
-//       </div>
-//     </Router>
-//   );
-// }
-// export default App;

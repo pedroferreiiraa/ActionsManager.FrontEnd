@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Navbar from './components/NavBar';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
-import DetailsPage from './pages/ProjectDetailsPage';
-import ProjectListPage from './pages/ProjectListPage';
+import AddProject from './pages/AddProjectPage';
+
 
 // Layout para rotas que terão a Navbar
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
@@ -29,23 +29,18 @@ const App: React.FC = () => {
             </Layout>
           }
         />
+
         <Route
-          path="/projects"
+          path="/adicionar-projeto" // Adicione esta rota
           element={
             <Layout>
-              <ProjectListPage />
+              <AddProject />
             </Layout>
           }
         />
+
         {/* Corrigindo a rota de detalhes do projeto */}
-        <Route
-          path="/projects/:id"
-          element={
-            <Layout>
-              <DetailsPage />
-            </Layout>
-          }
-        />
+
       </Routes>
     </Router>
   );
