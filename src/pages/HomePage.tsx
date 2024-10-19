@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useNavigate } from 'react-router-dom';
@@ -164,58 +165,56 @@ const Home = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {/* Boas-vindas e atalhos */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">Bem-vindo ao Sistema de Gestão de Ações!</h1>
-        <p className="text-gray-600">Aqui estão algumas informações rápidas e atalhos úteis para você começar.</p>
-        <div className="flex space-x-4 mt-4">
-          <button onClick={addProject} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none">
+      <div className="mb-4 md:mb-6">
+        <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-4">
+          <button onClick={addProject} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
             Adicionar Projeto
           </button>
-          <button onClick={() => navigate('/listar-projetos')} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none">
+          <button onClick={() => navigate('/listar-projetos')} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
             Listar Projetos
           </button>
-          <button onClick={() => navigate('/adicionar-usuarios')} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none">
+          <button onClick={() => navigate('/adicionar-usuarios')} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
             Adicionar Usuário
           </button>
         </div>
       </div>
 
       {/* Estatísticas resumidas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div className="bg-gray-100 p-4 rounded flex items-center">
-          <FaProjectDiagram className="text-4xl text-blue-500 mr-4" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-6">
+        <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
+          <FaProjectDiagram className="text-3xl md:text-4xl text-blue-500 mr-2 md:mr-4" />
           <div>
-            <h2 className="text-xl font-bold">{projects.length}</h2>
-            <p className="font-bold">Projetos em andamento</p>
+            <h2 className="text-lg md:text-xl font-bold">{projects.length}</h2>
+            <p className="text-sm md:text-base font-bold">Projetos em andamento</p>
           </div>
         </div>
-        <div className="bg-gray-100 p-4 rounded flex items-center">
-          <FaUsers className="text-4xl text-blue-500 mr-4" />
+        <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
+          <FaUsers className="text-3xl md:text-4xl text-blue-500 mr-2 md:mr-4" />
           <div>
-            <h2 className="text-xl font-bold">{users.length}</h2>
-            <p className="font-bold">Usuários ativos</p>
+            <h2 className="text-lg md:text-xl font-bold">{users.length}</h2>
+            <p className="text-sm md:text-base font-bold">Usuários ativos</p>
           </div>
         </div>
-        <div className="bg-gray-100 p-4 rounded flex items-center">
-          <FaChartBar className="text-4xl text-blue-500 mr-4" />
+        <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
+          <FaChartBar className="text-3xl md:text-4xl text-blue-500 mr-2 md:mr-4" />
           <div>
-            <h2 className="text-xl font-bold">{actions.length}</h2>
-            <p className="font-bold">Ações realizadas</p>
+            <h2 className="text-lg md:text-xl font-bold">{actions.length}</h2>
+            <p className="text-sm md:text-base font-bold">Ações realizadas</p>
           </div>
         </div>
       </div>
 
       {/* Últimos projetos adicionados */}
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-4">Últimos Projetos Adicionados</h2>
-        <div className="bg-white p-4 rounded shadow">
+      <div className="mb-4 md:mb-6">
+        <h2 className="text-lg md:text-xl font-bold mb-2 md:mb-4">Últimos Projetos Adicionados</h2>
+        <div className="bg-white p-2 md:p-4 rounded shadow">
           <ul>
             {projects.slice(0, 3).map((project) => (
-              <li key={project.id} className="flex justify-between items-center py-2 border-b">
-                <span className="font-bold">{project.title}</span>
-                <button onClick={() => navigate(`/projeto/${project.id}`)} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none">
+              <li key={project.id} className="flex flex-col md:flex-row md:justify-between md:items-center py-2 border-b">
+                <span className="font-bold text-sm md:text-base mb-2 md:mb-0">{project.title}</span>
+                <button onClick={() => navigate(`/projeto/${project.id}`)} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:ml-4">
                   Ver Detalhes
                 </button>
               </li>
@@ -225,12 +224,12 @@ const Home = () => {
       </div>
 
       {/* Feed de atividades recentes */}
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-4">Atividades Recentes</h2>
-        <div className="bg-white p-4 rounded shadow">
+      <div className="mb-4 md:mb-6">
+        <h2 className="text-lg md:text-xl font-bold mb-2 md:mb-4">Atividades Recentes</h2>
+        <div className="bg-white p-2 md:p-4 rounded shadow">
           <ul>
-            {actions.map((action) => (
-              <li key={action.id} className="py-2 border-b font-bold">
+            {actions.slice(0, 5).map((action) => (
+              <li key={action.id} className="py-2 border-b font-bold text-sm md:text-base">
                 {getUserFullName(action.userId)} adicionou uma ação ao projeto {getProjectTitle(action.projectId)}.
               </li>
             ))}
