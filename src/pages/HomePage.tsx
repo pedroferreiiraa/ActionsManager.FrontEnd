@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useNavigate } from 'react-router-dom';
@@ -30,6 +29,7 @@ const decodeJWT = (token: string) => {
     }).join(''));
 
     return JSON.parse(jsonPayload);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     console.error('Invalid token');
     return null;
@@ -41,6 +41,7 @@ const Home = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [actions, setActions] = useState<Action[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const Home = () => {
       setUserId(decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || null);
     }
 
-    fetch('http://localhost:5168/api/projects', {
+    fetch('http://localhost:5168/api/projects?pageNumber=1&pageSize=5', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ const Home = () => {
         return response.json();
       })
       .then((data) => {
-        if (data?.isSuccess && Array.isArray(data.data)) {
+        if (data?.data && Array.isArray(data.data)) {
           setProjects(data.data);
         } else {
           console.error('Unexpected data format:', data);
@@ -112,7 +113,7 @@ const Home = () => {
         return response.json();
       })
       .then((data) => {
-        if (data?.isSuccess && Array.isArray(data.data)) {
+        if (data?.data && Array.isArray(data.data)) {
           setActions(data.data);
         } else {
           console.error('Unexpected data format:', data);
@@ -133,36 +134,6 @@ const Home = () => {
     return project ? project.title : 'Projeto Desconhecido';
   };
 
-  const addProject = () => {
-    if (!userId) return;
-
-    const projectData = {
-      title: 'Novo Projeto',
-      userId,
-    };
-
-    fetch('http://localhost:5168/api/projects', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-      },
-      body: JSON.stringify(projectData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Project added:', data);
-        setProjects((prevProjects) => [...prevProjects, data]);
-      })
-      .catch((error) => {
-        console.error('Error adding project:', error);
-      });
-  };
 
   return (
     <div className="p-4 md:p-6">

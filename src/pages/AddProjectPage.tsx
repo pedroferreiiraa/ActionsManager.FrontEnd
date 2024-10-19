@@ -11,6 +11,7 @@ const decodeJWT = (token: string) => {
         }).join(''));
 
         return JSON.parse(jsonPayload);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
         console.error('Invalid token');
         return null;
@@ -29,9 +30,9 @@ const AddProject = () => {
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [projectNumber, setProjectNumber] = useState(0);
+    const [projectNumber, setProjectNumber] = useState<number | ''>('');
     const [originDate, setOriginDate] = useState('');
-    const [error, setError] = useState('');
+    const [error, setError] = useState<{ [key: string]: string }>({});
     const [token, setToken] = useState<string | null>(null);
     const [userId, setUserId] = useState<number | null>(null);
 
@@ -47,18 +48,26 @@ const AddProject = () => {
     }, []);
 
     const handleAddProject = () => {
+        const newError: { [key: string]: string } = {};
+
         if (!title) {
-            setError('O título do projeto é obrigatório.');
-            return;
+            newError.title = 'O título do projeto é obrigatório.';
         }
-
+        if (!projectNumber) {
+            newError.projectNumber = 'O número do projeto é obrigatório.';
+        }
+        if (!originDate) {
+            newError.originDate = 'A data de origem é obrigatória.';
+        }
         if (!token) {
-            setError('Token não encontrado. Faça login novamente.');
-            return;
+            newError.token = 'Token não encontrado. Faça login novamente.';
+        }
+        if (!userId) {
+            newError.userId = 'Usuário não identificado. Faça login novamente.';
         }
 
-        if (!userId) {
-            setError('Usuário não identificado. Faça login novamente.');
+        if (Object.keys(newError).length > 0) {
+            setError(newError);
             return;
         }
 
@@ -68,7 +77,7 @@ const AddProject = () => {
             description,
             userId,
             status: 0,
-            originDate: originDate || new Date().toISOString(),
+            originDate,
         };
 
         console.log('Attempting to add project with the following data:', projectData);
@@ -93,14 +102,13 @@ const AddProject = () => {
             })
             .catch((error) => {
                 console.error('Error adding project:', error);
-                setError('Erro ao adicionar o projeto. Tente novamente mais tarde.');
+                setError({ general: 'Erro ao adicionar o projeto. Tente novamente mais tarde.' });
             });
     };
 
     return (
         <div className="p-4 md:p-6 max-w-lg mx-auto">
             <h2 className="text-2xl font-bold mb-4">Adicionar Novo Projeto</h2>
-            {error && <div className="text-red-500 mb-4">{error}</div>}
             <div className="mb-4">
                 <label className="block text-sm font-bold mb-2" htmlFor="title">
                     Título do Projeto
@@ -112,6 +120,7 @@ const AddProject = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {error.title && <div className="text-red-500 mt-1">{error.title}</div>}
             </div>
             <div className="mb-4">
                 <label className="block text-sm font-bold mb-2" htmlFor="description">
@@ -132,13 +141,14 @@ const AddProject = () => {
                     id="projectNumber"
                     type="number"
                     value={projectNumber}
-                    onChange={(e) => setProjectNumber(isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value))}
+                    onChange={(e) => setProjectNumber(isNaN(parseInt(e.target.value)) ? '' : parseInt(e.target.value))}
                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {error.projectNumber && <div className="text-red-500 mt-1">{error.projectNumber}</div>}
             </div>
             <div className="mb-4">
                 <label className="block text-sm font-bold mb-2" htmlFor="originDate">
-                    Data de Origem (opcional)
+                    Data de Origem
                 </label>
                 <input
                     id="originDate"
@@ -147,6 +157,7 @@ const AddProject = () => {
                     onChange={(e) => setOriginDate(e.target.value)}
                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {error.originDate && <div className="text-red-500 mt-1">{error.originDate}</div>}
             </div>
             <button
                 onClick={handleAddProject}
@@ -154,6 +165,7 @@ const AddProject = () => {
             >
                 Adicionar Projeto
             </button>
+            {error.general && <div className="text-red-500 mt-4">{error.general}</div>}
         </div>
     );
 };

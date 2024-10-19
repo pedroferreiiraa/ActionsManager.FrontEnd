@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Container, Alert, CircularProgress } from '@mui/material';
-import { LockOutlined } from '@mui/icons-material';
-import Avatar from '@mui/material/Avatar';
-import Grid from '@mui/material/Grid';
+import 'tailwindcss/tailwind.css';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -34,6 +31,7 @@ const Login: React.FC = () => {
       // Armazena o token no localStorage (caso a API retorne um token)
       localStorage.setItem('token', data.token);
       navigate('/home'); // Redireciona para a Home
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -42,79 +40,66 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        {/* Avatar Icon for Login */}
-        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-          <LockOutlined />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Login
-        </Typography>
-        {error && (
-          <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
-            {error}
-          </Alert>
-        )}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <div className="flex flex-col items-center mb-4">
+          <div className="bg-blue-500 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+            <svg
+              className="w-8 h-8 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M12 2C9.243 2 7 4.243 7 7v3H5a1 1 0 00-1 1v10a1 1 0 001 1h14a1 1 0 001-1V11a1 1 0 00-1-1h-2V7c0-2.757-2.243-5-5-5zm-1 7V7a1 1 0 012 0v2h-2zm8 11H5V12h14v8z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold">Login</h2>
+        </div>
+        {error && <div className="text-red-500 mb-4">{error}</div>}
         {loading ? (
-          // Skeleton Loader while logging in
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-            <CircularProgress />
-          </Box>
+          <div className="flex justify-center mt-4">
+            <div className="w-8 h-8 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
+          </div>
         ) : (
-          // Login Form
-          <Box component="form" onSubmit={handleLogin} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                {/* Email Input */}
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Usuário"
-                  name="email"
-                  autoComplete="email"
-                  variant="outlined"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                {/* Password Input */}
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Senha"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  variant="outlined"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-            {/* Submit Button */}
-            <Button
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-bold mb-1">
+                Usuário
+              </label>
+              <input
+                id="email"
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-bold mb-1">
+                Senha
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <button
               type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none"
             >
               Entrar
-            </Button>
-          </Box>
+            </button>
+          </form>
         )}
-      </Box>
-    </Container>
+      </div>
+    </div>
   );
 };
 
