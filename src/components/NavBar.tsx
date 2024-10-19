@@ -3,21 +3,28 @@ import { FaBars } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
 
-const Navbar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+type NavbarProps = object;
+
+const Navbar: React.FC<NavbarProps> = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const toggleSidebar = () => {
+  const toggleSidebar = (): void => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path: string): void => {
     setIsSidebarOpen(false);
     navigate(path);
   };
 
-  const handleClickOutside = (event) => {
-    if (isSidebarOpen && !event.target.closest('.sidebar') && !event.target.closest('.toggle-button')) {
+  const handleClickOutside = (event: MouseEvent): void => {
+    if (
+      isSidebarOpen &&
+      event.target instanceof HTMLElement &&
+      !event.target.closest('.sidebar') &&
+      !event.target.closest('.toggle-button')
+    ) {
       setIsSidebarOpen(false);
     }
   };
@@ -69,22 +76,3 @@ const Navbar = () => {
 
 export default Navbar;
 
-// App.js (exemplo de uso)
-// import Navbar from './components/Navbar';
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// function App() {
-//   return (
-//     <Router>
-//       <div>
-//         <Navbar />
-//         <Routes>
-//           <Route path="/" element={<Home />} />
-//           <Route path="/adicionar-projetos" element={<AdicionarProjetos />} />
-//           <Route path="/listar-projetos" element={<ListarProjetos />} />
-//           <Route path="/adicionar-usuarios" element={<AdicionarUsuarios />} />
-//         </Routes>
-//       </div>
-//     </Router>
-//   );
-// }
-// export default App;
