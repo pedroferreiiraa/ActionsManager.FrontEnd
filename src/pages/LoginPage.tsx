@@ -5,14 +5,14 @@ import 'tailwindcss/tailwind.css';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState<{ email?: string; password?: string; general?: string }>({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError({});
 
     try {
       const response = await fetch('http://localhost:5168/api/users/login', {
@@ -24,7 +24,14 @@ const Login: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Login falhou! Verifique suas credenciais.');
+        if (response.status === 401) {
+          setError({ general: 'Login falhou! Usuário ou senha incorretos.' });
+        } else if (response.status >= 500) {
+          setError({ general: 'Login ou senha incorretos.' });
+        } else {
+          throw new Error('Ocorreu um erro ao tentar fazer login. Tente novamente mais tarde.');
+        }
+        return;
       }
 
       const data = await response.json();
@@ -33,7 +40,7 @@ const Login: React.FC = () => {
       navigate('/home'); // Redireciona para a Home
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setError(error.message);
+      setError({ general: error.message });
     } finally {
       setLoading(false);
     }
@@ -57,7 +64,7 @@ const Login: React.FC = () => {
           </div>
           <h2 className="text-2xl font-bold">Login</h2>
         </div>
-        {error && <div className="text-red-500 mb-4">{error}</div>}
+
         {loading ? (
           <div className="flex justify-center mt-4">
             <div className="w-8 h-8 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
@@ -76,6 +83,7 @@ const Login: React.FC = () => {
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              {error.email && <div className="text-red-500 mt-1">{error.email}</div>}
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-bold mb-1">
@@ -89,6 +97,8 @@ const Login: React.FC = () => {
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              {error.password && <div className="text-red-500 mt-1">{error.password}</div>}
+              {error.general && <div className="text-red-500 mt-2">{error.general}</div>}
             </div>
             <button
               type="submit"

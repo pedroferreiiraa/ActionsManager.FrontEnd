@@ -18,13 +18,18 @@ const ListProjects: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
+    const [statusFilter, setStatusFilter] = useState<number>(-1); // -1 significa "Todos"
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`http://localhost:5168/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10`, {
+                setError('');
+
+                const url = `http://localhost:5168/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+
+                const response = await fetch(url, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -37,6 +42,9 @@ const ListProjects: React.FC = () => {
                 }
 
                 const data = await response.json();
+                if (data.data.length === 0) {
+                    setError('Nenhum projeto encontrado para o filtro selecionado.');
+                }
                 setProjects(data.data || []);
                 setTotalPages(data.totalPages || 1);
             } catch (error: any) {
@@ -47,7 +55,7 @@ const ListProjects: React.FC = () => {
         };
 
         fetchProjects();
-    }, [searchTerm, pageNumber]);
+    }, [searchTerm, pageNumber, statusFilter]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,6 +72,11 @@ const ListProjects: React.FC = () => {
         if (pageNumber < totalPages) {
             setPageNumber(pageNumber + 1);
         }
+    };
+
+    const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setStatusFilter(parseInt(e.target.value));
+        setPageNumber(1);
     };
 
     return (
@@ -92,12 +105,31 @@ const ListProjects: React.FC = () => {
                 </button>
             </form>
 
+            <div className="mb-6">
+                <label htmlFor="statusFilter" className="block text-sm font-bold mb-2">
+                    Filtrar por Status
+                </label>
+                <select
+                    id="statusFilter"
+                    value={statusFilter}
+                    onChange={handleStatusFilterChange}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value={-1}>Todos</option>
+                    <option value={0}>Criado</option>
+                    <option value={1}>Em Andamento</option>
+                    <option value={2}>Suspenso</option>
+                    <option value={3}>Cancelado</option>
+                    <option value={4}>Concluído</option>
+                </select>
+            </div>
+
             {loading ? (
                 <div className="flex justify-center">
                     <div className="w-8 h-8 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
                 </div>
             ) : error ? (
-                <div className="text-red-500">{error}</div>
+                <div className="text-red-500 mb-4">{error}</div>
             ) : (
                 <div className="bg-white p-4 rounded shadow">
                     <ul>
@@ -111,7 +143,7 @@ const ListProjects: React.FC = () => {
                                 >
                                     <div className="md:flex md:justify-between md:items-center">
                                         <div>
-                                            <span className="font-bold">{project.title}</span> (#{project.projectNumber})
+                                            <span className="font-bold">{project.title}</span> (#{project.projectNumber}) - Status: {getStatusText(project.status)}
                                         </div>
                                         <button
                                             onClick={() => navigate(`/projeto/${project.id}`)}
@@ -144,12 +176,27 @@ const ListProjects: React.FC = () => {
                             Próxima Página
                         </button>
                     </div>
-
-
                 </div>
             )}
         </div>
     );
+};
+
+const getStatusText = (status: number): string => {
+    switch (status) {
+        case 0:
+            return 'Criado';
+        case 1:
+            return 'Em Andamento';
+        case 2:
+            return 'Suspenso';
+        case 3:
+            return 'Cancelado';
+        case 4:
+            return 'Concluído';
+        default:
+            return 'Desconhecido';
+    }
 };
 
 export default ListProjects;
