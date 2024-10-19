@@ -49,7 +49,7 @@ const ProjectManager: React.FC = () => {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://192.168.16.240:5000/api/projects', {
+      const response = await fetch('http://localhost:5168/api/projects', {
         method: 'GET',
       });
       const data = await response.json();
@@ -103,7 +103,7 @@ const ProjectManager: React.FC = () => {
 
   const handleDeleteProject = async (id: number) => {
     try {
-      await fetch(`http://192.168.16.240:5000/api/projects/${id}/delete`, { method: 'DELETE' });
+      await fetch(`http://localhost:5168/api/projects/${id}/delete`, { method: 'DELETE' });
       fetchProjects(); // Reload projects after deletion
     } catch (error) {
       console.error('Erro ao deletar o projeto:', error);
@@ -113,13 +113,13 @@ const ProjectManager: React.FC = () => {
   const handleSubmitProject = async () => {
     try {
       if (currentProject.id) {
-        await fetch(`http://192.168.16.240:5000/api/projects/${currentProject.id}`, {
+        await fetch(`http://localhost:5168/api/projects/${currentProject.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(currentProject),
         });
       } else {
-        await fetch('http://192.168.16.240:5000/api/projects', {
+        await fetch('http://localhost:5168/api/projects', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(currentProject),
@@ -134,7 +134,7 @@ const ProjectManager: React.FC = () => {
 
   const handleStartProject = async (id: number) => {
     try {
-      await fetch(`http://192.168.16.240:5000/api/projects/${id}/start`, { method: 'PUT' });
+      await fetch(`http://localhost:5168/api/projects/${id}/start`, { method: 'PUT' });
       fetchProjects();
     } catch (error) {
       console.error('Erro ao iniciar o projeto:', error);
@@ -143,7 +143,7 @@ const ProjectManager: React.FC = () => {
 
   const handleCompleteProject = async (id: number) => {
     try {
-      await fetch(`http://192.168.16.240:5000/api/projects/${id}/complete`, { method: 'PUT' });
+      await fetch(`http://localhost:5168/api/projects/${id}/complete`, { method: 'PUT' });
       fetchProjects();
     } catch (error) {
       console.error('Erro ao completar o projeto:', error);
@@ -163,7 +163,7 @@ const ProjectManager: React.FC = () => {
   const handleProjectAction = async (action: string) => {
     if (selectedProject) {
       try {
-        await fetch(`http://192.168.16.240:5000/api/projects/${selectedProject}/actions`, {
+        await fetch(`http://localhost:5168/api/projects/${selectedProject}/actions`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action }),

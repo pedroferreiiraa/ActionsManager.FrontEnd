@@ -21,7 +21,7 @@ const ProjectForm: React.FC = () => {
     };
 
     try {
-      const response = await fetch('http://192.168.16.240:5000/api/projects', {
+      const response = await fetch('http://localhost:5168/api/projects', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

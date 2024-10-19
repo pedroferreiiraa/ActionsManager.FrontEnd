@@ -46,7 +46,7 @@ const ProjectDetailsPage: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`http://192.168.16.240:5000/api/projects/${id}`, {
+        const response = await fetch(`http://localhost:5168/api/projects/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const ProjectDetailsPage: React.FC = () => {
   const handleStartProject = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://192.168.16.240:5000/api/projects/${id}/start`, {
+      const response = await fetch(`http://localhost:5168/api/projects/${id}/start`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const ProjectDetailsPage: React.FC = () => {
   const handleFinishProject = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://192.168.16.240:5000/api/projects/${id}`, {
+      const response = await fetch(`http://localhost:5168/api/projects/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
