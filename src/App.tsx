@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import AddProject from './pages/AddProjectPage';
 import ListProjects from './pages/ListProjectsPage'
+import ProjectDetails from './pages/ProjectDetails';
 
 // Layout para rotas que terão a Navbar
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
@@ -43,6 +44,14 @@ const App: React.FC = () => {
           element={
             <Layout>
               <ListProjects />
+            </Layout>
+          }
+        />
+         <Route
+          path="/projeto/:id" // Adicione esta rota
+          element={
+            <Layout>
+              <ProjectDetails />
             </Layout>
           }
         />

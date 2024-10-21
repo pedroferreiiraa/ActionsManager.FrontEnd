@@ -82,7 +82,7 @@ const AddProject = () => {
 
         console.log('Attempting to add project with the following data:', projectData);
 
-        fetch('http://localhost:5168/api/projects', {
+        fetch('http://localhost:5000/api/projects', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,13 +124,13 @@ const AddProject = () => {
             </div>
             <div className="mb-4">
                 <label className="block text-sm font-bold mb-2" htmlFor="description">
-                    Descrição do Projeto (opcional)
+                    Descrição do Projeto 
                 </label>
                 <textarea
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full h-32 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 ></textarea>
             </div>
             <div className="mb-4">

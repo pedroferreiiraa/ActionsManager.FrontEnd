@@ -9,6 +9,7 @@ interface Project {
     projectNumber: number;
     status: number;
     originDate: string;
+    isDeleted: boolean;  // Propriedade isDeleted para controle de exclusão
 }
 
 const ListProjects: React.FC = () => {
@@ -21,13 +22,31 @@ const ListProjects: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState<number>(-1); // -1 significa "Todos"
     const navigate = useNavigate();
 
+    // Função para definir as classes de cor com base no status
+    const getStatusColor = (status: number) => {
+        switch (status) {
+            case 0:
+                return "bg-blue-500 text-white";  // Criado - Azul
+            case 1:
+                return "bg-yellow-500 text-white"; // Em Andamento - Amarelo
+            case 2:
+                return "bg-gray-500 text-white";   // Suspenso - Cinza
+            case 3:
+                return "bg-red-500 text-white";    // Cancelado - Vermelho
+            case 4:
+                return "bg-green-500 text-white";  // Concluído - Verde
+            default:
+                return "bg-gray-300 text-black";   // Padrão para "Todos" ou indefinido - Cinza claro
+        }
+    };
+
     useEffect(() => {
         const fetchProjects = async () => {
             try {
                 setLoading(true);
                 setError('');
 
-                const url = `http://localhost:5168/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+                const url = `http://localhost:5000/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
 
                 const response = await fetch(url, {
                     method: 'GET',
@@ -38,14 +57,27 @@ const ListProjects: React.FC = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erro ao buscar os projetos.');
+                    throw new Error('Nenhum projeto encontrado para o filtro selecionado');
                 }
 
                 const data = await response.json();
-                if (data.data.length === 0) {
+
+                // Verificar se data.data é uma lista válida
+                if (!Array.isArray(data.data)) {
+                    throw new Error('Formato de dados inesperado recebido da API.');
+                }
+
+                // Aplicar a lógica de filtragem para excluir projetos deletados
+                const filteredProjects = data.data.filter((project: Project) => {
+                    // Verificação para garantir que o campo isDeleted está presente e é booleano
+                    return project.isDeleted === false;
+                });
+
+                if (filteredProjects.length === 0) {
                     setError('Nenhum projeto encontrado para o filtro selecionado.');
                 }
-                setProjects(data.data || []);
+
+                setProjects(filteredProjects);
                 setTotalPages(data.totalPages || 1);
             } catch (error: any) {
                 setError(error.message);
@@ -118,8 +150,6 @@ const ListProjects: React.FC = () => {
                     <option value={-1}>Todos</option>
                     <option value={0}>Criado</option>
                     <option value={1}>Em Andamento</option>
-                    <option value={2}>Suspenso</option>
-                    <option value={3}>Cancelado</option>
                     <option value={4}>Concluído</option>
                 </select>
             </div>
@@ -143,11 +173,16 @@ const ListProjects: React.FC = () => {
                                 >
                                     <div className="md:flex md:justify-between md:items-center">
                                         <div>
-                                            <span className="font-bold">{project.title}</span> (#{project.projectNumber}) - Status: {getStatusText(project.status)}
+                                            <span className="font-bold">{project.title}</span>
+                                            <span
+                                                className={`inline-block px-3 py-1 text-sm font-semibold rounded-md ml-2 ${getStatusColor(project.status)}`}
+                                            >
+                                                {getStatusText(project.status)}
+                                            </span>
                                         </div>
                                         <button
                                             onClick={() => navigate(`/projeto/${project.id}`)}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none mt-2 md:mt-0 md:ml-4"
+                                            className="bg-blue-500 text-white px-4 py-2 font-semibold rounded hover:bg-blue-600 focus:outline-none mt-2 md:mt-0 md:ml-4"
                                         >
                                             Ver Detalhes
                                         </button>

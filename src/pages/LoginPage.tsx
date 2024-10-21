@@ -15,7 +15,7 @@ const Login: React.FC = () => {
     setError({});
 
     try {
-      const response = await fetch('http://localhost:5168/api/users/login', {
+      const response = await fetch('http://localhost:5000/api/users/login', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

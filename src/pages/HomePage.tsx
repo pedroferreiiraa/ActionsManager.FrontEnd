@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useNavigate } from 'react-router-dom';
-import { FaChartBar, FaProjectDiagram, FaUsers } from 'react-icons/fa';
+import { FaChartBar, FaProjectDiagram, FaCheckCircle } from 'react-icons/fa';
 
 interface Project {
   id: string;
   title: string;
+  status: number; // Adicionado para identificar o status do projeto
+  isDeleted: boolean; // Adicionado para poder filtrar projetos deletados
 }
 
 interface User {
   id: string;
-  userName: string;
   fullName: string;
 }
 
@@ -29,7 +30,6 @@ const decodeJWT = (token: string) => {
     }).join(''));
 
     return JSON.parse(jsonPayload);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     console.error('Invalid token');
     return null;
@@ -39,9 +39,8 @@ const decodeJWT = (token: string) => {
 const Home = () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const [actions, setActions] = useState<Action[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [users, setUsers] = useState<User[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -51,7 +50,8 @@ const Home = () => {
       setUserId(decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || null);
     }
 
-    fetch('http://localhost:5168/api/projects?pageNumber=1&pageSize=5', {
+    // Buscar projetos
+    fetch('http://localhost:5000/api/projects?pageNumber=1&pageSize=50', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,9 @@ const Home = () => {
       })
       .then((data) => {
         if (data?.data && Array.isArray(data.data)) {
-          setProjects(data.data);
+          // Filtrar projetos que não foram deletados
+          const filteredProjects = data.data.filter((project: Project) => !project.isDeleted);
+          setProjects(filteredProjects);
         } else {
           console.error('Unexpected data format:', data);
         }
@@ -75,31 +77,8 @@ const Home = () => {
         console.error('Error fetching projects:', error);
       });
 
-    fetch('http://localhost:5168/api/users', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data?.isSuccess && Array.isArray(data.data)) {
-          setUsers(data.data);
-        } else {
-          console.error('Unexpected data format:', data);
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-      });
-
-    fetch('http://localhost:5168/api/actions', {
+    // Buscar ações
+    fetch('http://localhost:5000/api/actions', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -122,18 +101,51 @@ const Home = () => {
       .catch((error) => {
         console.error('Error fetching actions:', error);
       });
+
+    // Buscar usuários
+    fetch('http://localhost:5000/api/users', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data?.data && Array.isArray(data.data)) {
+          setUsers(data.data);
+        } else {
+          console.error('Unexpected data format:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+      });
+
   }, []);
 
-  const getUserFullName = (userId: string) => {
-    const user = users.find((user) => user.id === userId);
-    return user ? user.fullName : 'Usuário Desconhecido';
-  };
-
+  // Função para pegar o título do projeto
   const getProjectTitle = (projectId: string) => {
     const project = projects.find((project) => project.id === projectId);
     return project ? project.title : 'Projeto Desconhecido';
   };
 
+  // Função para pegar o nome completo do usuário
+  const getUserFullName = (userId: string) => {
+    const user = users.find((user) => user.id === userId);
+    return user ? user.fullName : 'Usuário Desconhecido';
+  };
+
+  // Filtrar projetos concluídos
+  const completedProjectsCount = projects.filter((project) => project.status === 4).length;
+
+  // Filtrar projetos em andamento (status diferente de "Concluído" (4))
+  const ongoingProjectsCount = projects.filter((project) => project.status !== 4).length;
 
   return (
     <div className="p-4 md:p-6">
@@ -146,9 +158,6 @@ const Home = () => {
           <button onClick={() => navigate('/listar-projetos')} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
             Listar Projetos
           </button>
-          <button onClick={() => navigate('/adicionar-usuarios')} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
-            Adicionar Usuário
-          </button>
         </div>
       </div>
 
@@ -157,15 +166,15 @@ const Home = () => {
         <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
           <FaProjectDiagram className="text-3xl md:text-4xl text-blue-500 mr-2 md:mr-4" />
           <div>
-            <h2 className="text-lg md:text-xl font-bold">{projects.length}</h2>
+            <h2 className="text-lg md:text-xl font-bold">{ongoingProjectsCount}</h2>
             <p className="text-sm md:text-base font-bold">Projetos em andamento</p>
           </div>
         </div>
         <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
-          <FaUsers className="text-3xl md:text-4xl text-blue-500 mr-2 md:mr-4" />
+          <FaCheckCircle className="text-3xl md:text-4xl text-green-500 mr-2 md:mr-4" />
           <div>
-            <h2 className="text-lg md:text-xl font-bold">{users.length}</h2>
-            <p className="text-sm md:text-base font-bold">Usuários ativos</p>
+            <h2 className="text-lg md:text-xl font-bold">{completedProjectsCount}</h2>
+            <p className="text-sm md:text-base font-bold">Projetos Concluídos</p>
           </div>
         </div>
         <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
