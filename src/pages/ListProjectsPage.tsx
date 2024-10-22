@@ -46,7 +46,7 @@ const ListProjects: React.FC = () => {
                 setLoading(true);
                 setError('');
 
-                const url = `http://localhost:5000/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+                const url = `http://localhost:5000/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=100&status=${statusFilter}`;
 
                 const response = await fetch(url, {
                     method: 'GET',
@@ -68,17 +68,19 @@ const ListProjects: React.FC = () => {
                 }
 
                 // Aplicar a lógica de filtragem para excluir projetos deletados
-                const filteredProjects = data.data.filter((project: Project) => {
-                    // Verificação para garantir que o campo isDeleted está presente e é booleano
-                    return project.isDeleted === false;
-                });
+                const filteredProjects = data.data.filter((project: Project) => !project.isDeleted);
 
                 if (filteredProjects.length === 0) {
                     setError('Nenhum projeto encontrado para o filtro selecionado.');
                 }
 
-                setProjects(filteredProjects);
-                setTotalPages(data.totalPages || 1);
+                // Ordenar projetos para que o último inserido apareça primeiro
+                const sortedProjects = filteredProjects.sort((a, b) => {
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                });
+
+                setProjects(sortedProjects);
+                setTotalPages(Math.ceil(filteredProjects.length / 10));
             } catch (error: any) {
                 setError(error.message);
             } finally {
@@ -166,7 +168,7 @@ const ListProjects: React.FC = () => {
                         {projects.length === 0 ? (
                             <li className="text-gray-500">Nenhum projeto encontrado.</li>
                         ) : (
-                            projects.map((project) => (
+                            projects.slice((pageNumber - 1) * 10, pageNumber * 10).map((project) => (
                                 <li
                                     key={project.id}
                                     className="py-2 border-b last:border-b-0"

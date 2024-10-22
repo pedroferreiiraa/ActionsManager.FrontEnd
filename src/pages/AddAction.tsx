@@ -1,26 +1,12 @@
-import React, { useState } from 'react';
-import 'tailwindcss/tailwind.css';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import 'tailwindcss/tailwind.css';
 
-interface ActionForm {
-  title: string;
-  what: string;
-  why: string;
-  when: string;
-  where: string;
-  who: string;
-  how: string;
-  howMuch: number;
-  origin: string;
-  originDate: string;
-  status: number;
-  conclusionText: string;
-}
-
-const AddAction: React.FC = () => {
+const AddActionForm: React.FC = () => {
+  const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const { projectId } = useParams<{ projectId: string }>(); // Obtemos o ID do projeto da URL
-  const [formData, setFormData] = useState<ActionForm>({
+  const [token, setToken] = useState<string>('');
+  const [formData, setFormData] = useState({
     title: '',
     what: '',
     why: '',
@@ -30,14 +16,23 @@ const AddAction: React.FC = () => {
     how: '',
     howMuch: 0,
     origin: '',
-    originDate: '',
+    originDate: new Date().toISOString(),
     status: 0,
     conclusionText: '',
+    userId: 1, // Este valor será atualizado com base no usuário logado
   });
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
 
-  // Função para lidar com a mudança nos campos do formulário
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -45,59 +40,55 @@ const AddAction: React.FC = () => {
     }));
   };
 
-  // Função para lidar com o envio do formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem('jwt');
-
     try {
-      // Primeiro passo: criar a ação
+      if (!token) {
+        throw new Error('Token de autorização não encontrado.');
+      }
+
+      // Cria a ação
       const createActionResponse = await fetch('http://localhost:5000/api/actions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          ...formData,
-          userId: 1, // Pegando o ID do usuário; isso pode ser dinâmico de acordo com seu sistema de autenticação
-        }),
+        body: JSON.stringify({ ...formData, projectId: Number(projectId) }),
       });
 
       if (!createActionResponse.ok) {
-        const errorData = await createActionResponse.json();
-        throw new Error(`Erro ao adicionar ação: ${errorData.message || 'Erro desconhecido.'}`);
+        const errorMessage = await createActionResponse.text();
+        throw new Error(`Erro ao criar a ação: ${errorMessage}`);
       }
 
-      // Extraindo o ID da ação recém-criada
       const createdAction = await createActionResponse.json();
-      const actionId = createdAction.id;
 
-      // Segundo passo: associar a ação ao projeto
-      const associateActionResponse = await fetch(`http://localhost:5000/api/projects/${projectId}/actions`, {
+      // Vincula a ação ao projeto
+      const associateUrl = `http://localhost:5000/api/projects/${projectId}/actions`;
+      const associateResponse = await fetch(associateUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          projectId: parseInt(projectId!), // ID do projeto vindo da URL
-          actionId: actionId, // ID da ação recém-criada
+          projectId: Number(projectId),
+          actionId: createdAction.id,
         }),
       });
 
-      if (!associateActionResponse.ok) {
-        const errorData = await associateActionResponse.json();
-        throw new Error(`Erro ao associar ação ao projeto: ${errorData.message || 'Erro desconhecido.'}`);
+      if (!associateResponse.ok) {
+        const errorMessage = await associateResponse.text();
+        throw new Error(`Erro ao associar a ação ao projeto: ${errorMessage}`);
       }
 
-      // Se a ação for adicionada e associada com sucesso, redirecionar para a página do projeto
+      // Redireciona de volta para os detalhes do projeto
       navigate(`/projeto/${projectId}`);
     } catch (error: any) {
       setError(error.message);
     }
   };
-
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded shadow-md">
       <h1 className="text-2xl font-bold mb-4">Adicionar Ação ao Projeto</h1>
@@ -205,32 +196,6 @@ const AddAction: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="origin" className="block text-sm font-bold mb-2">Origem</label>
-          <input
-            type="text"
-            id="origin"
-            name="origin"
-            value={formData.origin}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="originDate" className="block text-sm font-bold mb-2">Data de Origem</label>
-          <input
-            type="text"
-            id="originDate"
-            name="originDate"
-            value={formData.originDate}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
           <label htmlFor="conclusionText" className="block text-sm font-bold mb-2">Texto de Conclusão</label>
           <textarea
             id="conclusionText"
@@ -253,4 +218,4 @@ const AddAction: React.FC = () => {
   );
 };
 
-export default AddAction;
+export default AddActionForm;

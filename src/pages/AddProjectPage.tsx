@@ -30,8 +30,10 @@ const AddProject = () => {
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [projectNumber, setProjectNumber] = useState<number | ''>('');
+ 
     const [originDate, setOriginDate] = useState('');
+    const [origin, setOrigin] = useState('');
+    const [originNumber, setOriginNumber] = useState<number | ''>('');
     const [error, setError] = useState<{ [key: string]: string }>({});
     const [token, setToken] = useState<string | null>(null);
     const [userId, setUserId] = useState<number | null>(null);
@@ -53,11 +55,15 @@ const AddProject = () => {
         if (!title) {
             newError.title = 'O título do projeto é obrigatório.';
         }
-        if (!projectNumber) {
-            newError.projectNumber = 'O número do projeto é obrigatório.';
-        }
+        
         if (!originDate) {
             newError.originDate = 'A data de origem é obrigatória.';
+        }
+        if (!origin) {
+            newError.origin = 'A origem é obrigatória.';
+        }
+        if (!originNumber) {
+            newError.originNumber = 'O número de origem é obrigatório.';
         }
         if (!token) {
             newError.token = 'Token não encontrado. Faça login novamente.';
@@ -73,11 +79,12 @@ const AddProject = () => {
 
         const projectData = {
             title,
-            projectNumber,
-            description,
             userId,
             status: 0,
             originDate,
+            description,
+            origin,
+            originNumber,
         };
 
         console.log('Attempting to add project with the following data:', projectData);
@@ -110,41 +117,30 @@ const AddProject = () => {
         <div className="p-4 md:p-6 max-w-lg mx-auto">
             <h2 className="text-2xl font-bold mb-4">Adicionar Novo Projeto</h2>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="title">
-                    Título do Projeto
+                <label className="block text-sm font-bold mb-2" htmlFor="origin">
+                    Origem
                 </label>
                 <input
-                    id="title"
+                    id="origin"
                     type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    value={origin}
+                    onChange={(e) => setOrigin(e.target.value)}
                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {error.title && <div className="text-red-500 mt-1">{error.title}</div>}
+                {error.origin && <div className="text-red-500 mt-1">{error.origin}</div>}
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="description">
-                    Descrição do Projeto 
-                </label>
-                <textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="w-full h-32 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></textarea>
-            </div>
-            <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="projectNumber">
-                    Número do Projeto
+                <label className="block text-sm font-bold mb-2" htmlFor="originNumber">
+                    Número de Origem
                 </label>
                 <input
-                    id="projectNumber"
+                    id="originNumber"
                     type="number"
-                    value={projectNumber}
-                    onChange={(e) => setProjectNumber(isNaN(parseInt(e.target.value)) ? '' : parseInt(e.target.value))}
+                    value={originNumber}
+                    onChange={(e) => setOriginNumber(isNaN(parseInt(e.target.value)) ? '' : parseInt(e.target.value))}
                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {error.projectNumber && <div className="text-red-500 mt-1">{error.projectNumber}</div>}
+                {error.originNumber && <div className="text-red-500 mt-1">{error.originNumber}</div>}
             </div>
             <div className="mb-4">
                 <label className="block text-sm font-bold mb-2" htmlFor="originDate">
@@ -159,6 +155,33 @@ const AddProject = () => {
                 />
                 {error.originDate && <div className="text-red-500 mt-1">{error.originDate}</div>}
             </div>
+            <div className="mb-4">
+                <label className="block text-sm font-bold mb-2" htmlFor="title">
+                    Título do Projeto
+                </label>
+                <input
+                    id="title"
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {error.title && <div className="text-red-500 mt-1">{error.title}</div>}
+            </div>
+           
+       
+            <div className="mb-4">
+                <label className="block text-sm font-bold mb-2" htmlFor="description">
+                    Descrição do Projeto
+                </label>
+                <textarea
+                    id="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full h-32 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ></textarea>
+            </div>
+           
             <button
                 onClick={handleAddProject}
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none"

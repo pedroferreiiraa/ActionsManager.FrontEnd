@@ -15,6 +15,8 @@ interface Project {
   isDeleted: boolean;
   description: string;
   actionIds: number[];
+  origin: string;
+  originNumber: number;
 }
 
 interface User {
@@ -23,22 +25,21 @@ interface User {
 }
 
 interface Action {
-    id: number;
-    title: string;
-    what: string;
-    why: string;
-    when: string;
-    where: string;
-    who: string;
-    how: string;
-    howMuch: number;
-    status: number;
-    projectId: number;
-    userId: number;
-    isDeleted: boolean;
-    // Adicione outros campos se necessário
-  }
-  
+  id: number;
+  title: string;
+  what: string;
+  why: string;
+  when: string;
+  where: string;
+  who: string;
+  how: string;
+  howMuch: number;
+  status: number;
+  projectId: number;
+  userId: number;
+  isDeleted: boolean;
+  // Outros campos se necessário
+}
 
 const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -49,6 +50,7 @@ const ProjectDetails: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [token, setToken] = useState<string>('');
+  const [expandedActions, setExpandedActions] = useState<number[]>([]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -142,7 +144,7 @@ const ProjectDetails: React.FC = () => {
     }
   }, [id, token, navigate]);
 
-  // Fetch actions associated with the project
+  // Buscar as ações associadas ao projeto
   useEffect(() => {
     const fetchActions = async () => {
       if (project && project.actionIds && project.actionIds.length > 0) {
@@ -154,38 +156,49 @@ const ProjectDetails: React.FC = () => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
               },
-            }).then((response) => {
-              if (!response.ok) {
-                throw new Error(
-                  `Erro ao buscar a ação ${actionId}: ${response.status}`
-                );
-              }
-              return response.json().then((actionData) => {
-                if (actionData && actionData.data) {
-                  return actionData.data; // Extrai os dados do campo 'data'
-                } else {
-                  throw new Error('Estrutura de resposta inesperada da API.');
-                }
-              });
             })
+              .then((response) => {
+                if (!response.ok) {
+                  if (response.status === 404 || response.status === 500) {
+                    console.warn(
+                      `Ação ${actionId} não pôde ser buscada (status: ${response.status}). Ela pode ter sido deletada. Ignorando...`
+                    );
+                    return null; // Ignora essa ação
+                  } else {
+                    throw new Error(`Erro ao buscar a ação ${actionId}: ${response.status}`);
+                  }
+                }
+                return response.json().then((actionData) => {
+                  if (actionData && actionData.data && !actionData.data.isDeleted) {
+                    return actionData.data; // Só retorna a ação se não estiver deletada
+                  } else {
+                    console.warn(`Ação ${actionId} foi deletada. Ignorando...`);
+                    return null;
+                  }
+                });
+              })
+              .catch((error) => {
+                console.error(`Erro ao buscar a ação ${actionId}: ${error.message}`);
+                return null;
+              })
           );
-  
+
           const actionsData = await Promise.all(actionPromises);
-          setActions(actionsData);
+          // Filtra para remover ações que foram ignoradas (null)
+          const validActions = actionsData.filter((action) => action !== null);
+          setActions(validActions as Action[]);
         } catch (error: any) {
           setError('Erro ao buscar as ações: ' + error.message);
         }
       } else {
-        // Se não houver actions, limpa o estado de ações
         setActions([]);
       }
     };
-  
+
     if (token && project) {
       fetchActions();
     }
   }, [project, token]);
-  
 
   const getStatusText = (status: number): string => {
     switch (status) {
@@ -204,38 +217,53 @@ const ProjectDetails: React.FC = () => {
     }
   };
 
-  // Handler for starting the project
+  // Função para alternar a expansão das ações
+  const toggleActionExpansion = (actionId: number) => {
+    if (expandedActions.includes(actionId)) {
+      setExpandedActions(expandedActions.filter((id) => id !== actionId));
+    } else {
+      setExpandedActions([...expandedActions, actionId]);
+    }
+  };
+
   const handleStartProject = async () => {
     if (project) {
       try {
         if (!token) {
           throw new Error('Token de autorização não encontrado.');
         }
-
+  
         const url = `http://localhost:5000/api/projects/${project.id}/start`;
-
+  
+        const body = {
+          id: project.id, // Incluindo o ID do projeto no corpo da requisição para coincidir com o ID da URL
+          command: "StartProject" // Incluindo o campo 'command' que o backend está exigindo
+        };
+  
         const response = await fetch(url, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify(body) // Incluindo o corpo da requisição
         });
-
+  
         if (!response.ok) {
           const errorMessage = await response.text();
           throw new Error(`Erro ao iniciar o projeto: ${errorMessage}`);
         }
-
-        // Update the project status locally
+  
+        // Atualiza o status do projeto localmente
         setProject({ ...project, status: 1, startedAt: new Date().toISOString() });
       } catch (error: any) {
         setError(error.message);
       }
     }
   };
+  
+  
 
-  // Handler for completing the project
   const handleCompleteProject = async () => {
     if (project) {
       try {
@@ -258,7 +286,7 @@ const ProjectDetails: React.FC = () => {
           throw new Error(`Erro ao completar o projeto: ${errorMessage}`);
         }
 
-        // Update the project status locally
+        // Atualiza o status do projeto localmente
         setProject({ ...project, status: 4, completedAt: new Date().toISOString() });
       } catch (error: any) {
         setError(error.message);
@@ -266,36 +294,166 @@ const ProjectDetails: React.FC = () => {
     }
   };
 
-  // Handler for deleting the project
   const handleDeleteProject = async () => {
     if (project) {
       try {
         if (!token) {
           throw new Error('Token de autorização não encontrado.');
         }
-
-        const url = `http://localhost:5000/api/projects/${project.id}`;
-
+  
+        const url = `http://localhost:5000/api/projects/${project.id}/delete`;
+  
+        const body = {
+          id: project.id, // Incluindo o ID do projeto no corpo da requisição, caso seja necessário
+          command: "DeleteProject"
+        };
+  
         const response = await fetch(url, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify(body) // Incluindo o corpo da requisição
         });
-
+  
         if (!response.ok) {
           const errorMessage = await response.text();
           throw new Error(`Erro ao deletar o projeto: ${errorMessage}`);
         }
-
-        // Navigate back after deletion
+  
+        // Navega de volta após a deleção
         navigate(-1);
       } catch (error: any) {
         setError(error.message);
       }
     }
   };
+  
+
+  const handleStartAction = async (actionId: number) => {
+    try {
+      if (!token) {
+        throw new Error('Token de autorização não encontrado.');
+      }
+
+      const url = `http://localhost:5000/api/actions/${actionId}/start`;
+
+      const body = {
+        id: actionId, // Inclui o ID da ação
+        command: "StartAction" // Comando necessário pelo backend
+      };
+
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body) // Corpo da requisição
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Erro ao iniciar a ação: ${errorMessage}`);
+      }
+
+      // Atualiza o status da ação localmente
+      setActions((prevActions) =>
+        prevActions.map((action) =>
+          action.id === actionId
+            ? { ...action, status: 1, startedAt: new Date().toISOString() }
+            : action
+        )
+      );
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+  const handleCompleteAction = async (actionId: number) => {
+    try {
+      if (!token) {
+        throw new Error('Token de autorização não encontrado.');
+      }
+
+      const url = `http://localhost:5000/api/actions/${actionId}/complete`;
+
+      const body = {
+        id: actionId, // Inclui o ID da ação
+        command: "CompleteAction" // Comando necessário pelo backend
+      };
+
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body) // Corpo da requisição
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Erro ao completar a ação: ${errorMessage}`);
+      }
+
+      // Atualiza o status da ação localmente
+      setActions((prevActions) =>
+        prevActions.map((action) =>
+          action.id === actionId
+            ? { ...action, status: 4, completedAt: new Date().toISOString() }
+            : action
+        )
+      );
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+  const handleDeleteAction = async (actionId: number) => {
+    try {
+      if (!token) {
+        throw new Error('Token de autorização não encontrado.');
+      }
+  
+      const url = `http://localhost:5000/api/actions/${actionId}/delete`;
+  
+      const body = {
+        id: actionId
+      };
+  
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body) // Incluindo o corpo da requisição como esperado
+      });
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Erro ao deletar a ação: ${errorMessage}`);
+      }
+  
+      // Atualiza o estado local removendo a ação deletada
+      setActions((prevActions) =>
+        prevActions.filter((action) => action.id !== actionId)
+      );
+  
+      // Atualiza os actionIds no projeto
+      if (project) {
+        setProject({
+          ...project,
+          actionIds: project.actionIds.filter((id) => id !== actionId),
+        });
+      }
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+  
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -316,10 +474,12 @@ const ProjectDetails: React.FC = () => {
       ) : project ? (
         <div className="bg-white p-6 rounded shadow">
           <h1 className="text-2xl font-bold mb-4">{project.title}</h1>
-          <div className="mb-4">
+          <p className='font-bold mb-4'>Origem do projeto: {project.origin}</p>
+          <p className='font-bold mb-4'>Número da Origem: {project.originNumber}</p>
+          <p className="font-bold mb-4">Id do projeto: {project.id} </p>
+          {/* <div className="mb-4">
             <span className="font-semibold">Número do Projeto: </span>
-            {project.projectNumber}
-          </div>
+          </div> */}
           <div className="mb-4">
             <span className="font-semibold">Status: </span>
             <span className="inline-block px-3 py-1 text-sm font-semibold rounded-md">
@@ -355,31 +515,101 @@ const ProjectDetails: React.FC = () => {
             {project.description}
           </div>
           <div className="mb-4">
-  <span className="font-semibold">Ações Associadas: </span>
+            <h3 className="text-xl font-bold mb-2">Ações Associadas:</h3>
             {actions.length > 0 ? (
-                <div className="mt-6">
-                <h3 className="text-xl font-bold mb-2">Ações do Projeto:</h3>
-                <ul className="list-disc list-inside">
-                    {actions.map((action) => (
-                    <li key={action.id} className="mb-4">
-                        <h4 className="font-bold">{action.title}</h4>
-                        <p><strong>O que:</strong> {action.what}</p>
-                        <p><strong>Por que:</strong> {action.why}</p>
-                        <p><strong>Quando:</strong> {action.when}</p>
-                        <p><strong>Onde:</strong> {action.where}</p>
-                        <p><strong>Quem:</strong> {action.who}</p>
-                        <p><strong>Como:</strong> {action.how}</p>
-                        <p><strong>Quanto:</strong> {action.howMuch}</p>
-                        <p><strong>Status:</strong> {getStatusText(action.status)}</p>
-                    </li>
-                    ))}
-                </ul>
-                </div>
+              <div className="mt-4">
+                {actions.map((action) => (
+                  <div key={action.id} className="mb-2 border-b border-gray-200">
+                    <button
+                      onClick={() => toggleActionExpansion(action.id)}
+                      className="w-full text-left focus:outline-none py-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-lg">
+                          {action.title}
+                        </span>
+                        <svg
+                          className={`w-5 h-5 transform transition-transform ${
+                            expandedActions.includes(action.id)
+                              ? 'rotate-180'
+                              : ''
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </button>
+                    {expandedActions.includes(action.id) && (
+                      <div className="pl-4 pb-4 text-sm text-gray-700">
+                        <p>
+                          <strong>O que:</strong> {action.what}
+                        </p>
+                        <p>
+                          <strong>Por que:</strong> {action.why}
+                        </p>
+                        <p>
+                          <strong>Quando:</strong> {action.when}
+                        </p>
+                        <p>
+                          <strong>Onde:</strong> {action.where}
+                        </p>
+                        <p>
+                          <strong>Quem:</strong> {action.who}
+                        </p>
+                        <p>
+                          <strong>Como:</strong> {action.how}
+                        </p>
+                        <p>
+                          <strong>Quanto:</strong> {action.howMuch}
+                        </p>
+                        <p>
+                          <strong>Status:</strong> {getStatusText(action.status)}
+                        </p>
+                        {/* Botões para ações */}
+                        <div className="mt-4">
+                          {action.status === 0 && (
+                            <button
+                              onClick={() => handleStartAction(action.id)}
+                              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none mr-2"
+                            >
+                              Iniciar Ação
+                            </button>
+                          )}
+                          {action.status === 1 && (
+                            <button
+                              onClick={() => handleCompleteAction(action.id)}
+                              className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none mr-2"
+                            >
+                              Completar Ação
+                            </button>
+                          )}
+                          {action.status !== 4 && (
+                            <button
+                              onClick={() => handleDeleteAction(action.id)}
+                              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 focus:outline-none"
+                            >
+                              Deletar Ação
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             ) : (
-                <p className="mt-6">Este projeto não possui ações associadas.</p>
+              <p className="mt-6">Este projeto não possui ações associadas.</p>
             )}
-            </div>
-
+          </div>
           <div className="mt-6">
             {project.status === 0 && (
               <button
@@ -398,19 +628,24 @@ const ProjectDetails: React.FC = () => {
                   Completar Projeto
                 </button>
                 <button
-                  onClick={() => navigate(`/projetos/${project.id}/adicionar-acao`)}
+                  onClick={() => navigate(`/projeto/${project.id}/inserir-acao`)}
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none"
                 >
                   Adicionar Ação
                 </button>
               </>
             )}
-            <button
+
+            {project.status !== 4 && (
+              <>
+              <button
               onClick={handleDeleteProject}
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none mr-4"
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-4 focus:outline-none mr-4"
             >
               Deletar Projeto
             </button>
+            </>
+            )}
           </div>
         </div>
       ) : (
