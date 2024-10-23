@@ -40,6 +40,23 @@ const ListProjects: React.FC = () => {
         }
     };
 
+    const getStatusText = (status: number): string => {
+        switch (status) {
+            case 0:
+                return 'Criado';
+            case 1:
+                return 'Em Andamento';
+            case 2:
+                return 'Suspenso';
+            case 3:
+                return 'Cancelado';
+            case 4:
+                return 'Concluído';
+            default:
+                return 'Desconhecido';
+        }
+    };
+
     useEffect(() => {
         const fetchProjects = async () => {
             try {
@@ -75,7 +92,7 @@ const ListProjects: React.FC = () => {
                 }
 
                 // Ordenar projetos para que o último inserido apareça primeiro
-                const sortedProjects = filteredProjects.sort((a, b) => {
+                const sortedProjects = filteredProjects.sort((a: { createdAt: string | number | Date; }, b: { createdAt: string | number | Date; }) => {
                     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                 });
 
@@ -114,126 +131,116 @@ const ListProjects: React.FC = () => {
     };
 
     return (
-        <div className="p-6 max-w-4xl mx-auto">
-            <div className="flex justify-start mb-4">
-                <button
-                    onClick={() => navigate("/adicionar-projeto")}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none"
-                >
-                    Adicionar Projeto
-                </button>
-            </div>
-            <form onSubmit={handleSearch} className="flex items-center mb-6">
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Buscar projetos..."
-                />
-                <button
-                    type="submit"
-                    className="ml-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-                >
-                    <FaSearch />
-                </button>
-            </form>
-
-            <div className="mb-6">
-                <label htmlFor="statusFilter" className="block text-sm font-bold mb-2">
-                    Filtrar por Status
-                </label>
-                <select
-                    id="statusFilter"
-                    value={statusFilter}
-                    onChange={handleStatusFilterChange}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value={-1}>Todos</option>
-                    <option value={0}>Criado</option>
-                    <option value={1}>Em Andamento</option>
-                    <option value={4}>Concluído</option>
-                </select>
-            </div>
-
-            {loading ? (
-                <div className="flex justify-center">
-                    <div className="w-8 h-8 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
-                </div>
-            ) : error ? (
-                <div className="text-red-500 mb-4">{error}</div>
-            ) : (
-                <div className="bg-white p-4 rounded shadow">
-                    <ul>
-                        {projects.length === 0 ? (
-                            <li className="text-gray-500">Nenhum projeto encontrado.</li>
-                        ) : (
-                            projects.slice((pageNumber - 1) * 10, pageNumber * 10).map((project) => (
-                                <li
-                                    key={project.id}
-                                    className="py-2 border-b last:border-b-0"
-                                >
-                                    <div className="md:flex md:justify-between md:items-center">
-                                        <div>
-                                            <span className="font-bold">{project.title}</span>
-                                            <span
-                                                className={`inline-block px-3 py-1 text-sm font-semibold rounded-md ml-2 ${getStatusColor(project.status)}`}
-                                            >
-                                                {getStatusText(project.status)}
-                                            </span>
-                                        </div>
-                                        <button
-                                            onClick={() => navigate(`/projeto/${project.id}`)}
-                                            className="bg-blue-500 text-white px-4 py-2 font-semibold rounded hover:bg-blue-600 focus:outline-none mt-2 md:mt-0 md:ml-4"
-                                        >
-                                            Ver Detalhes
-                                        </button>
-                                    </div>
-                                </li>
-                            ))
-                        )}
-                    </ul>
-
-                    <div className="flex justify-between items-center mt-4">
-                        <button
-                            onClick={handlePreviousPage}
-                            disabled={pageNumber === 1}
-                            className="bg-gray-300 text-gray-700 px-4 py-2 rounded disabled:opacity-50 focus:outline-none hover:bg-gray-400"
-                        >
-                            Página Anterior
-                        </button>
-                        <span className="text-sm">
-                            Página {pageNumber} de {totalPages}
-                        </span>
-                        <button
-                            onClick={handleNextPage}
-                            disabled={pageNumber === totalPages}
-                            className="bg-gray-300 text-gray-700 px-4 py-2 rounded disabled:opacity-50 focus:outline-none hover:bg-gray-400"
-                        >
-                            Próxima Página
-                        </button>
-                    </div>
-                </div>
-            )}
+        <div className="p-8 max-w-4xl mx-auto bg-gray-50 min-h-screen">
+        {/* Botão Adicionar Projeto */}
+        <div className="flex justify-start mb-6">
+          <button
+            onClick={() => navigate("/adicionar-projeto")}
+            className="bg-blue-600 text-white px-5 py-3 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
+          >
+            Adicionar Projeto
+          </button>
         </div>
+      
+        {/* Formulário de Busca */}
+        <form onSubmit={handleSearch} className="flex items-center mb-8">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            placeholder="Buscar projetos..."
+          />
+          <button
+            type="submit"
+            className="ml-3 p-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
+          >
+            <FaSearch />
+          </button>
+        </form>
+      
+        {/* Filtro por Status */}
+        <div className="mb-6">
+          <label htmlFor="statusFilter" className="block text-sm font-semibold text-gray-700 mb-3">
+            Filtrar por Status
+          </label>
+          <select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={handleStatusFilterChange}
+            className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          >
+            <option value={-1}>Todos</option>
+            <option value={0}>Criado</option>
+            <option value={1}>Em Andamento</option>
+            <option value={4}>Concluído</option>
+          </select>
+        </div>
+      
+        {/* Loading Spinner */}
+        {loading ? (
+          <div className="flex justify-center mb-6">
+            <div className="w-10 h-10 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
+          </div>
+        ) : error ? (
+          <div className="text-red-500 text-center mb-6">{error}</div>
+        ) : (
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            {/* Lista de Projetos */}
+            <ul>
+              {projects.length === 0 ? (
+                <li className="text-gray-500 text-center">Nenhum projeto encontrado.</li>
+              ) : (
+                projects.slice((pageNumber - 1) * 10, pageNumber * 10).map((project) => (
+                  <li key={project.id} className="py-4 border-b last:border-b-0">
+                    <div className="md:flex md:justify-between md:items-center">
+                      <div className="flex items-center">
+                        <span className="font-semibold text-lg text-gray-800">{project.title}</span>
+                        <span
+                          className={`inline-block px-3 py-1 text-sm font-semibold rounded-lg ml-3 ${getStatusColor(
+                            project.status
+                          )}`}
+                        >
+                          {getStatusText(project.status)}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => navigate(`/projeto/${project.id}`)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all mt-3 md:mt-0 md:ml-4"
+                      >
+                        Ver Detalhes
+                      </button>
+                    </div>
+                  </li>
+                ))
+              )}
+            </ul>
+      
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-6">
+              <button
+                onClick={handlePreviousPage}
+                disabled={pageNumber === 1}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
+              >
+                Página Anterior
+              </button>
+              <span className="text-sm text-gray-600">
+                Página {pageNumber} de {totalPages}
+              </span>
+              <button
+                onClick={handleNextPage}
+                disabled={pageNumber === totalPages}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
+              >
+                Próxima Página
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      
     );
-};
-
-const getStatusText = (status: number): string => {
-    switch (status) {
-        case 0:
-            return 'Criado';
-        case 1:
-            return 'Em Andamento';
-        case 2:
-            return 'Suspenso';
-        case 3:
-            return 'Cancelado';
-        case 4:
-            return 'Concluído';
-        default:
-            return 'Desconhecido';
-    }
 };
 
 export default ListProjects;

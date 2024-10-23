@@ -90,131 +90,134 @@ const AddActionForm: React.FC = () => {
     }
   };
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white rounded shadow-md">
-      <h1 className="text-2xl font-bold mb-4">Adicionar Ação ao Projeto</h1>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="title" className="block text-sm font-bold mb-2">Título da Ação</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+    <div className="p-8 max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
+  <h1 className="text-2xl font-semibold mb-6 text-gray-800">Adicionar Ação ao Projeto</h1>
 
-        <div className="mb-4">
-          <label htmlFor="what" className="block text-sm font-bold mb-2">O que</label>
-          <textarea
-            id="what"
-            name="what"
-            value={formData.what}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+  {error && <div className="text-red-500 mb-6">{error}</div>}
 
-        <div className="mb-4">
-          <label htmlFor="why" className="block text-sm font-bold mb-2">Por quê</label>
-          <textarea
-            id="why"
-            name="why"
-            value={formData.why}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="when" className="block text-sm font-bold mb-2">Quando</label>
-          <input
-            type="text"
-            id="when"
-            name="when"
-            value={formData.when}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="where" className="block text-sm font-bold mb-2">Onde</label>
-          <input
-            type="text"
-            id="where"
-            name="where"
-            value={formData.where}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="who" className="block text-sm font-bold mb-2">Quem</label>
-          <input
-            type="text"
-            id="who"
-            name="who"
-            value={formData.who}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="how" className="block text-sm font-bold mb-2">Como</label>
-          <textarea
-            id="how"
-            name="how"
-            value={formData.how}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="howMuch" className="block text-sm font-bold mb-2">Quanto</label>
-          <input
-            type="number"
-            id="howMuch"
-            name="howMuch"
-            value={formData.howMuch}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="conclusionText" className="block text-sm font-bold mb-2">Texto de Conclusão</label>
-          <textarea
-            id="conclusionText"
-            name="conclusionText"
-            value={formData.conclusionText}
-            onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none"
-        >
-          Adicionar Ação
-        </button>
-      </form>
+  <form onSubmit={handleSubmit}>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-2">Título da Ação</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="when" className="block text-sm font-semibold text-gray-700 mb-2">Quando</label>
+        <input
+          type="text"
+          id="when"
+          name="when"
+          value={formData.when}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+        />
+      </div>
     </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label htmlFor="where" className="block text-sm font-semibold text-gray-700 mb-2">Onde</label>
+        <input
+          type="text"
+          id="where"
+          name="where"
+          value={formData.where}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="who" className="block text-sm font-semibold text-gray-700 mb-2">Quem</label>
+        <input
+          type="text"
+          id="who"
+          name="who"
+          value={formData.who}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+        />
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label htmlFor="howMuch" className="block text-sm font-semibold text-gray-700 mb-2">Quanto</label>
+        <input
+          type="number"
+          id="howMuch"
+          name="howMuch"
+          value={formData.howMuch}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+        />
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="col-span-2">
+        <label htmlFor="what" className="block text-sm font-semibold text-gray-700 mb-2">O que</label>
+        <textarea
+          id="what"
+          name="what"
+          value={formData.what}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+        />
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="col-span-2">
+        <label htmlFor="why" className="block text-sm font-semibold text-gray-700 mb-2">Por quê</label>
+        <textarea
+          id="why"
+          name="why"
+          value={formData.why}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+        />
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="col-span-2">
+        <label htmlFor="how" className="block text-sm font-semibold text-gray-700 mb-2">Como</label>
+        <textarea
+          id="how"
+          name="how"
+          value={formData.how}
+          onChange={handleChange}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          required
+        />
+      </div>
+    </div>
+
+   
+
+    <button
+      type="submit"
+      className="bg-blue-600 text-white px-5 py-3 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
+    >
+      Adicionar Ação
+    </button>
+  </form>
+</div>
+
   );
 };
 

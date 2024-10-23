@@ -148,53 +148,65 @@ const Home = () => {
   const ongoingProjectsCount = projects.filter((project) => project.status !== 4).length;
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="p-6 md:p-8 bg-gray-50 min-h-screen">
       {/* Boas-vindas e atalhos */}
-      <div className="mb-4 md:mb-6">
-        <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-4">
-          <button onClick={() => navigate('/adicionar-projeto')} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
+      <div className="mb-6">
+        <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-6">
+          <button
+            onClick={() => navigate('/adicionar-projeto')}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all md:px-6"
+          >
             Adicionar Projeto
           </button>
-          <button onClick={() => navigate('/listar-projetos')} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:px-4 md:py-2">
+          <button
+            onClick={() => navigate('/listar-projetos')}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all md:px-6"
+          >
             Listar Projetos
           </button>
         </div>
       </div>
-
+  
       {/* Estatísticas resumidas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-6">
-        <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
-          <FaProjectDiagram className="text-3xl md:text-4xl text-blue-500 mr-2 md:mr-4" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="bg-white p-4 rounded-lg shadow-lg flex items-center">
+          <FaProjectDiagram className="text-4xl text-blue-500 mr-4" />
           <div>
-            <h2 className="text-lg md:text-xl font-bold">{ongoingProjectsCount}</h2>
-            <p className="text-sm md:text-base font-bold">Projetos em andamento</p>
+            <h2 className="text-xl font-semibold">{ongoingProjectsCount}</h2>
+            <p className="text-base text-gray-600">Projetos em andamento</p>
           </div>
         </div>
-        <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
-          <FaCheckCircle className="text-3xl md:text-4xl text-green-500 mr-2 md:mr-4" />
+        <div className="bg-white p-4 rounded-lg shadow-lg flex items-center">
+          <FaCheckCircle className="text-4xl text-green-500 mr-4" />
           <div>
-            <h2 className="text-lg md:text-xl font-bold">{completedProjectsCount}</h2>
-            <p className="text-sm md:text-base font-bold">Projetos Concluídos</p>
+            <h2 className="text-xl font-semibold">{completedProjectsCount}</h2>
+            <p className="text-base text-gray-600">Projetos Concluídos</p>
           </div>
         </div>
-        <div className="bg-gray-100 p-2 md:p-4 rounded flex items-center">
-          <FaChartBar className="text-3xl md:text-4xl text-blue-500 mr-2 md:mr-4" />
+        <div className="bg-white p-4 rounded-lg shadow-lg flex items-center">
+          <FaChartBar className="text-4xl text-blue-500 mr-4" />
           <div>
-            <h2 className="text-lg md:text-xl font-bold">{actions.length}</h2>
-            <p className="text-sm md:text-base font-bold">Ações realizadas</p>
+            <h2 className="text-xl font-semibold">{actions.length}</h2>
+            <p className="text-base text-gray-600">Ações realizadas</p>
           </div>
         </div>
       </div>
-
+  
       {/* Últimos projetos adicionados */}
-      <div className="mb-4 md:mb-6">
-        <h2 className="text-lg md:text-xl font-bold mb-2 md:mb-4">Últimos Projetos Adicionados</h2>
-        <div className="bg-white p-2 md:p-4 rounded shadow">
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-4">Últimos Projetos Adicionados</h2>
+        <div className="bg-white p-4 rounded-lg shadow-lg">
           <ul>
             {projects.slice(0, 5).map((project) => (
-              <li key={project.id} className="flex flex-col md:flex-row md:justify-between md:items-center py-2 border-b">
-                <span className="font-bold text-sm md:text-base mb-2 md:mb-0">{project.title}</span>
-                <button onClick={() => navigate(`/projeto/${project.id}`)} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none md:ml-4">
+              <li
+                key={project.id}
+                className="flex flex-col md:flex-row md:justify-between md:items-center py-3 border-b last:border-none"
+              >
+                <span className="font-semibold text-base">{project.title}</span>
+                <button
+                  onClick={() => navigate(`/projeto/${project.id}`)}
+                  className="bg-blue-600 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all md:ml-4"
+                >
                   Ver Detalhes
                 </button>
               </li>
@@ -202,14 +214,14 @@ const Home = () => {
           </ul>
         </div>
       </div>
-
+  
       {/* Feed de atividades recentes */}
-      <div className="mb-4 md:mb-6">
-        <h2 className="text-lg md:text-xl font-bold mb-2 md:mb-4">Atividades Recentes</h2>
-        <div className="bg-white p-2 md:p-4 rounded shadow">
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-4">Atividades Recentes</h2>
+        <div className="bg-white p-4 rounded-lg shadow-lg">
           <ul>
             {actions.slice(0, 5).map((action) => (
-              <li key={action.id} className="py-2 border-b font-bold text-sm md:text-base">
+              <li key={action.id} className="py-3 border-b last:border-none font-medium text-base text-gray-700">
                 {getUserFullName(action.userId)} adicionou uma ação ao projeto {getProjectTitle(action.projectId)}.
               </li>
             ))}
@@ -218,6 +230,7 @@ const Home = () => {
       </div>
     </div>
   );
+  
 };
 
 export default Home;

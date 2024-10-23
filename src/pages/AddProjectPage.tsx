@@ -114,82 +114,87 @@ const AddProject = () => {
     };
 
     return (
-        <div className="p-4 md:p-6 max-w-lg mx-auto">
-            <h2 className="text-2xl font-bold mb-4">Adicionar Novo Projeto</h2>
-            <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="origin">
-                    Origem
-                </label>
-                <input
-                    id="origin"
-                    type="text"
-                    value={origin}
-                    onChange={(e) => setOrigin(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {error.origin && <div className="text-red-500 mt-1">{error.origin}</div>}
-            </div>
-            <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="originNumber">
-                    Número de Origem
-                </label>
-                <input
-                    id="originNumber"
-                    type="number"
-                    value={originNumber}
-                    onChange={(e) => setOriginNumber(isNaN(parseInt(e.target.value)) ? '' : parseInt(e.target.value))}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {error.originNumber && <div className="text-red-500 mt-1">{error.originNumber}</div>}
-            </div>
-            <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="originDate">
-                    Data de Origem
-                </label>
-                <input
-                    id="originDate"
-                    type="text"
-                    value={originDate}
-                    onChange={(e) => setOriginDate(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {error.originDate && <div className="text-red-500 mt-1">{error.originDate}</div>}
-            </div>
-            <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="title">
-                    Título do Projeto
-                </label>
-                <input
-                    id="title"
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {error.title && <div className="text-red-500 mt-1">{error.title}</div>}
-            </div>
-           
-       
-            <div className="mb-4">
-                <label className="block text-sm font-bold mb-2" htmlFor="description">
-                    Descrição do Projeto
-                </label>
-                <textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="w-full h-32 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></textarea>
-            </div>
-           
-            <button
-                onClick={handleAddProject}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none"
-            >
-                Adicionar Projeto
-            </button>
-            {error.general && <div className="text-red-500 mt-4">{error.general}</div>}
-        </div>
+        <div className="p-6 md:p-8 max-w-lg mx-auto bg-white rounded-lg shadow-lg">
+  <h2 className="text-2xl font-semibold mb-6 text-gray-800">Adicionar Novo Projeto</h2>
+  
+  <div className="mb-5">
+    <label className="block text-sm font-semibold mb-2 text-gray-700" htmlFor="origin">
+      Origem
+    </label>
+    <input
+      id="origin"
+      type="text"
+      value={origin}
+      onChange={(e) => setOrigin(e.target.value)}
+      className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+    />
+    {error.origin && <div className="text-red-500 mt-1">{error.origin}</div>}
+  </div>
+
+  <div className="mb-5">
+    <label className="block text-sm font-semibold mb-2 text-gray-700" htmlFor="originNumber">
+      Número de Origem
+    </label>
+    <input
+      id="originNumber"
+      type="number"
+      value={originNumber}
+      onChange={(e) => setOriginNumber(isNaN(parseInt(e.target.value)) ? '' : parseInt(e.target.value))}
+      className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+    />
+    {error.originNumber && <div className="text-red-500 mt-1">{error.originNumber}</div>}
+  </div>
+
+  <div className="mb-5">
+    <label className="block text-sm font-semibold mb-2 text-gray-700" htmlFor="originDate">
+      Data de Origem
+    </label>
+    <input
+      id="originDate"
+      type="text"
+      value={originDate}
+      onChange={(e) => setOriginDate(e.target.value)}
+      className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+    />
+    {error.originDate && <div className="text-red-500 mt-1">{error.originDate}</div>}
+  </div>
+
+  <div className="mb-5">
+    <label className="block text-sm font-semibold mb-2 text-gray-700" htmlFor="title">
+      Título do Projeto
+    </label>
+    <input
+      id="title"
+      type="text"
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+    />
+    {error.title && <div className="text-red-500 mt-1">{error.title}</div>}
+  </div>
+
+  <div className="mb-5">
+    <label className="block text-sm font-semibold mb-2 text-gray-700" htmlFor="description">
+      Descrição do Projeto
+    </label>
+    <textarea
+      id="description"
+      value={description}
+      onChange={(e) => setDescription(e.target.value)}
+      className="w-full h-36 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+    ></textarea>
+  </div>
+
+  <button
+    onClick={handleAddProject}
+    className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+  >
+    Adicionar Projeto
+  </button>
+
+  {error.general && <div className="text-red-500 mt-4">{error.general}</div>}
+</div>
+
     );
 };
 
