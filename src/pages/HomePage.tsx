@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useNavigate } from 'react-router-dom';
 import { FaChartBar, FaProjectDiagram, FaCheckCircle } from 'react-icons/fa';
@@ -30,7 +30,7 @@ const decodeJWT = (token: string) => {
     }).join(''));
 
     return JSON.parse(jsonPayload);
-  } catch (e) {
+  } catch {
     console.error('Invalid token');
     return null;
   }
@@ -41,7 +41,7 @@ const Home = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [actions, setActions] = useState<Action[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [,setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
