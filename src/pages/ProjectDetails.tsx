@@ -44,7 +44,6 @@ const ProjectDetailsPage: React.FC = () => {
   }, [navigate]);
 
     useEffect(() => {
-    // Função para buscar os detalhes do projeto e suas ações
     const fetchProjectDetails = async () => {
       try {
         setLoading(true);
@@ -79,69 +78,9 @@ const ProjectDetailsPage: React.FC = () => {
         setLoading(false);
       }
     };
+  }, [id, token]);
 
 
-
-    
-    const fetchUserDetails = async (userId: number) => {
-      try {
-        if (!userId) {
-          throw new Error('ID do usuário inválido.');
-        }
-
-        const userUrl = `http://localhost:5000/api/users/${userId}`;
-
-        const userResponse = await fetch(userUrl, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!userResponse.ok) {
-          const errorDetail = await userResponse.json();
-          throw new Error(
-            `Erro ao buscar os detalhes do usuário: ${
-              errorDetail.message || 'Usuário não encontrado'
-            }`
-          );
-        }
-
-        const userData = await userResponse.json();
-
-        if (userData) {
-          setUser(userData);
-        } else {
-          throw new Error('Usuário não encontrado.');
-        }
-      } catch (error: any) {
-        setError('Erro ao buscar os detalhes do usuário: ' + error.message);
-      }
-    };
-
-    if (token) {
-      fetchProjectDetails();
-    }
-  }, [id, token, navigate]);
-
-
-  const getStatusText = (status: number): string => {
-    switch (status) {
-      case 0:
-        return 'Criado';
-      case 1:
-        return 'Em Andamento';
-      case 2:
-        return 'Suspenso';
-      case 3:
-        return 'Cancelado';
-      case 4:
-        return 'Concluído';
-      default:
-        return 'Desconhecido';
-    }
-  };
 
 
 
@@ -279,12 +218,20 @@ const ProjectDetailsPage: React.FC = () => {
     }
   };
 
-
   return project ? (
     <div className="project-details-page">
       <h1>{project.title}</h1>
-      <p>Status: {project.status}</p>
-      <p>{project.description}</p>
+      <p><strong>Status:</strong> {project.status}</p>
+      <p><strong>Número do Projeto:</strong> {project.projectNumber}</p>
+      <p><strong>ID do Usuário:</strong> {project.userId}</p>
+      <p><strong>Data de Origem:</strong> {project.originDate}</p>
+      <p><strong>Criado em:</strong> {new Date(project.createdAt).toLocaleString()}</p>
+      <p><strong>Iniciado em:</strong> {project.startedAt ? new Date(project.startedAt).toLocaleString() : 'Não Iniciado'}</p>
+      <p><strong>Concluído em:</strong> {project.completedAt ? new Date(project.completedAt).toLocaleString() : 'Não Concluído'}</p>
+      <p><strong>Descrição:</strong> {project.description}</p>
+      <p><strong>Origem:</strong> {project.origin}</p>
+      <p><strong>Número de Origem:</strong> {project.originNumber}</p>
+      <p><strong>Texto de Conclusão:</strong> {project.conclusionText}</p>
 
       {/* Botões de ação do projeto */}
       <button onClick={handleStartProject}>Iniciar Projeto</button>
@@ -293,9 +240,23 @@ const ProjectDetailsPage: React.FC = () => {
       <button onClick={handleUpdateProjectNavigation}>Atualizar Projeto</button>
 
       {/* Ações do projeto */}
-      {/* <ProjectActions projectId={project.id} actionIds={project.actionIds} token={token} /> */}
+      <div>
+        <h3>Ações:</h3>
+        {project.actionIds.length > 0 ? (
+          <ul>
+            {project.actionIds.map((actionId) => (
+              <li key={actionId}>Ação ID: {actionId}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>Este projeto não possui ações associadas.</p>
+        )}
+      </div>
     </div>
-  ) : <div>Projeto não encontrado</div>;
+  ) : (
+    <div>Projeto não encontrado</div>
+  );
 };
 
 export default ProjectDetailsPage;
+
