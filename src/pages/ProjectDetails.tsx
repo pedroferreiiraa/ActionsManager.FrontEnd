@@ -38,7 +38,7 @@ interface Action {
   projectId: number;
   userId: number;
   isDeleted: boolean;
-  // Outros campos se necessário
+  conclusionText: string;
 }
 
 const ProjectDetails: React.FC = () => {
@@ -262,8 +262,6 @@ const ProjectDetails: React.FC = () => {
     }
   };
   
-  
-
   const handleCompleteProject = async () => {
     if (project) {
       try {
@@ -454,6 +452,89 @@ const ProjectDetails: React.FC = () => {
     }
   };
   
+  const handleUpdateConclusion = async (actionId: number, conclusionText: string) => {
+    try {
+      if (!token) {
+        throw new Error('Token de autorização não encontrado.');
+      }
+  
+      const url = `http://localhost:5000/api/actions/${actionId}`;
+  
+      const body = {
+        id: actionId,
+        conclusionText: conclusionText
+      };
+  
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body) // Incluindo apenas os campos necessários
+      });
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Erro ao atualizar a conclusão da ação: ${errorMessage}`);
+      }
+  
+      // Atualiza o status da ação localmente
+      setActions((prevActions) =>
+        prevActions.map((action) =>
+          action.id === actionId
+            ? { ...action, conclusionText: conclusionText, status: 4, completedAt: new Date().toISOString() }
+            : action
+        )
+      );
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+  const handleUpdateProject = async (updatedFields: Partial<Project>) => {
+    if (project && (project.status === 0 || project.status === 1)) {
+      try {
+        if (!token) {
+          throw new Error('Token de autorização não encontrado.');
+        }
+
+        const updateUrl = `http://localhost:5000/api/projects/${project.id}`;
+        const updatedProject = {
+          ...project,
+          ...updatedFields,
+        };
+
+        const response = await fetch(updateUrl, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedProject),
+        });
+
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(`Erro ao atualizar o projeto: ${errorMessage}`);
+        }
+
+        // Atualiza os detalhes do projeto localmente após a atualização
+        setProject(updatedProject);
+      } catch (error: any) {
+        setError(error.message);
+      }
+    } else {
+      setError('O projeto só pode ser atualizado se estiver nos status "Criado" ou "Em Andamento".');
+    }
+  };
+
+  const handleUpdateProjectNavigation = () => {
+    if (project) {
+      navigate(`/projeto/${project.id}/update`);
+    }
+  };
+
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -600,6 +681,34 @@ const ProjectDetails: React.FC = () => {
                               Deletar Ação
                             </button>
                           )}
+                          
+                          {action.status === 4 && (
+                          <div className="mt-4">
+                            <label htmlFor={`conclusionText-${action.id}`} className="block text-sm font-bold mb-2">
+                              Texto de Conclusão
+                            </label>
+                            <textarea
+                              id={`conclusionText-${action.id}`}
+                              value={action.conclusionText}
+                              onChange={(e) =>
+                                setActions((prevActions) =>
+                                  prevActions.map((prevAction) =>
+                                    prevAction.id === action.id
+                                      ? { ...prevAction, conclusionText: e.target.value }
+                                      : prevAction
+                                  )
+                                )
+                              }
+                              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <button
+                              onClick={() => handleUpdateConclusion(action.id, action.conclusionText)}
+                              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none mt-2"
+                            >
+                              Salvar Conclusão
+                            </button>
+                          </div>
+                        )}
                         </div>
                       </div>
                     )}
@@ -646,6 +755,16 @@ const ProjectDetails: React.FC = () => {
             </button>
             </>
             )}
+
+            {(project?.status === 0 || project?.status === 1) && (
+                      <button
+                        onClick={handleUpdateProjectNavigation}
+                        className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 focus:outline-none mr-4"
+
+                      >
+                        Atualizar Projeto
+                      </button>
+                    )}
           </div>
         </div>
       ) : (
