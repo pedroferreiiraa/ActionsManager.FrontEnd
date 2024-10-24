@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 
 interface Action {
   id: number;
@@ -39,7 +39,6 @@ const getActionStatusText = (status: number): string => {
 };
 
 const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => {
-  const navigate = useNavigate();
   const [actions, setActions] = useState<Action[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -144,7 +143,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
     }
   };
 
-  const handleCompleteAction = async (id: number) => {
+  const handleCompleteAction = async () => {
     if (selectedAction) {
       try {
         if (!token) {
@@ -337,7 +336,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
             )}
             {selectedAction.status === 1 && (
               <button
-                onClick={() => handleCompleteAction(selectedAction.id)}
+                onClick={handleCompleteAction}
                 className="w-full bg-green-600 text-white px-4 py-3 rounded-lg mb-4 hover:bg-green-700 transition"
               >
                 Completar Ação

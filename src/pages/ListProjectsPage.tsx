@@ -58,72 +58,73 @@ const ListProjects: React.FC = () => {
     };
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                setLoading(true);
-                setError('');
-
-                const url = `http://localhost:5000/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=100&status=${statusFilter}`;
-
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error('Nenhum projeto encontrado para o filtro selecionado');
-                }
-
-                const data = await response.json();
-
-                // Verificar se data.data é uma lista válida
-                if (!Array.isArray(data.data)) {
-                    throw new Error('Formato de dados inesperado recebido da API.');
-                }
-
-                // Aplicar a lógica de filtragem para excluir projetos deletados
-                const filteredProjects = data.data.filter((project: Project) => !project.isDeleted);
-
-                if (filteredProjects.length === 0) {
-                    setError('Nenhum projeto encontrado para o filtro selecionado.');
-                }
-
-                // Ordenar projetos para que o último inserido apareça primeiro
-                const sortedProjects = filteredProjects.sort((a: { createdAt: string | number | Date; }, b: { createdAt: string | number | Date; }) => {
-                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                });
-
-                setProjects(sortedProjects);
-                setTotalPages(Math.ceil(filteredProjects.length / 10));
-            } catch (error: any) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProjects();
-    }, [searchTerm, pageNumber, statusFilter]);
+      const fetchProjects = async () => {
+          try {
+              setLoading(true);
+              setError('');
+  
+              const url = `http://localhost:5000/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+  
+              const response = await fetch(url, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${localStorage.getItem('token')}`,
+                  },
+              });
+  
+              if (!response.ok) {
+                  throw new Error('Nenhum projeto encontrado para o filtro selecionado');
+              }
+  
+              const data = await response.json();
+  
+              // Filtrar projetos não excluídos
+              const filteredProjects = data.data.filter((project: Project) => !project.isDeleted);
+  
+              if (filteredProjects.length === 0 && pageNumber > 1) {
+                  setError('Nenhum projeto encontrado para esta página.');
+                  return;
+              }
+  
+              // Ordenar os projetos para que os mais recentes apareçam primeiro
+              const sortedProjects = filteredProjects.sort((a: any, b: any) => {
+                  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+              });
+  
+              // Atualizar os projetos no estado
+              setProjects(sortedProjects);
+              setTotalPages(data.totalPages);
+          } catch (error: any) {
+              setError(error.message);
+          } finally {
+              setLoading(false);
+          }
+      };
+  
+      fetchProjects();
+  }, [searchTerm, pageNumber, statusFilter]);
+  
+  
+  
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setPageNumber(1);
     };
 
-    const handlePreviousPage = () => {
-        if (pageNumber > 1) {
-            setPageNumber(pageNumber - 1);
-        }
-    };
-
-    const handleNextPage = () => {
-        if (pageNumber < totalPages) {
-            setPageNumber(pageNumber + 1);
-        }
-    };
+        const handlePreviousPage = () => {
+          if (pageNumber > 1) {
+              setPageNumber(pageNumber - 1);
+          }
+      };
+      
+      const handleNextPage = () => {
+          if (pageNumber < totalPages) {
+              setPageNumber(pageNumber + 1);
+          }
+      };
+      
 
     const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setStatusFilter(parseInt(e.target.value));
@@ -191,7 +192,7 @@ const ListProjects: React.FC = () => {
               {projects.length === 0 ? (
                 <li className="text-gray-500 text-center">Nenhum projeto encontrado.</li>
               ) : (
-                projects.slice((pageNumber - 1) * 10, pageNumber * 10).map((project) => (
+                projects.map((project) => (
                   <li key={project.id} className="py-4 border-b last:border-b-0">
                     <div className="md:flex md:justify-between md:items-center">
                       <div className="flex items-center">
@@ -215,6 +216,7 @@ const ListProjects: React.FC = () => {
                 ))
               )}
             </ul>
+
       
             {/* Paginação */}
             <div className="flex justify-between items-center mt-6">
