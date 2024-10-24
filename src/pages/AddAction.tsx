@@ -91,6 +91,12 @@ const AddActionForm: React.FC = () => {
   };
   return (
     <div className="p-8 max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
+       <button
+            onClick={() => navigate(-1)}
+            className="bg-gray-200 text-gray-700 px-5 py-3 rounded-lg mb-4 hover:bg-gray-300 focus:outline-none shadow-md transition-all"
+          >
+            Voltar
+          </button>
   <h1 className="text-2xl font-semibold mb-6 text-gray-800">Adicionar Ação ao Projeto</h1>
 
   {error && <div className="text-red-500 mb-6">{error}</div>}
