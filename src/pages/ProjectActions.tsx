@@ -26,6 +26,7 @@ interface ProjectActionsProps {
   token: string;
 }
 
+
 const getActionStatusText = (status: number): string => {
   const statusMap: { [key: number]: string } = {
     0: 'Não Iniciada',
@@ -44,7 +45,6 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
   const [error, setError] = useState<string>('');
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
   const [conclusionText, setConclusionText] = useState<string>('');
-
 
   const fetchActions = async () => {
     try {
@@ -89,7 +89,6 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
     }
   }, [projectId, token]);
 
-
   const handleActionClick = (action: Action) => {
     setSelectedAction(action);
   };
@@ -102,12 +101,12 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
     if (selectedAction) {
       try {
         const url = `http://localhost:5000/api/actions/${selectedAction.id}/start`;
-  
+
         const body = {
           id: selectedAction.id,
           command: "StartAction",
         };
-  
+
         const response = await fetch(url, {
           method: 'PUT',
           headers: {
@@ -116,20 +115,20 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
           },
           body: JSON.stringify(body),
         });
-  
+
         if (!response.ok) {
           throw new Error('Erro ao iniciar a ação');
         }
-  
+
         const updatedAction = await response.json();
-  
+
         // Atualiza a lista de ações mantendo a `selectedAction` inalterada
         const newActionsState = actions.map((action) =>
           action.id === updatedAction.id ? { ...action, ...updatedAction } : action
         );
-  
+
         setActions(newActionsState);
-  
+
         // Garante que `selectedAction` é atualizado corretamente com os novos dados
         setSelectedAction((prev) => ({
           ...prev,
@@ -144,30 +143,29 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
       }
     }
   };
-  
 
   const handleCompleteAction = async (id: number) => {
-    if(selectedAction) {
+    if (selectedAction) {
       try {
         if (!token) {
           throw new Error('Token de autorização não encontrado.');
         }
 
-        const url = `http://localhost:5000/api/actions/${selectedAction.id}/complete`
+        const url = `http://localhost:5000/api/actions/${selectedAction.id}/complete`;
 
         const body = {
           id: selectedAction.id,
           command: "CompleteAction",
-          conclusionText: conclusionText
+          conclusionText: conclusionText,
         };
 
         const response = await fetch(url, {
           method: "PUT",
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token},`
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         });
 
         if (!response.ok) {
@@ -182,7 +180,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
         );
 
         setActions(newActionsState);
-  
+
         // Garante que `selectedAction` é atualizado corretamente com os novos dados
         setSelectedAction((prev) => ({
           ...prev,
@@ -190,7 +188,6 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
           status: 4, // Define o status como "Completo"
           startedAt: new Date().toISOString(), // Atualiza a data de início
         }));
-        
 
         fetchActions();
       } catch (error: any) {
@@ -214,7 +211,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
 
       const body = {
         actionId: actionId,
-        conclusionText: conclusionText
+        conclusionText: conclusionText,
       };
 
       const response = await fetch(url, {
@@ -223,7 +220,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -232,12 +229,12 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
       }
 
       // Atualiza o estado da ação com o texto de conclusão
-      const newActionsState = actions.map((action) => 
+      const newActionsState = actions.map((action) =>
         action.id === actionId ? { ...action, conclusionText: conclusionText, status: 4 } : action
       );
 
       setActions(newActionsState);
-      setSelectedAction((prev) => prev ? { ...prev, conclusionText: conclusionText } : null);
+      setSelectedAction((prev) => (prev ? { ...prev, conclusionText: conclusionText } : null));
       setConclusionText('');
       console.log("Texto de conclusão salvo: ", newActionsState);
     } catch (error: any) {
@@ -307,16 +304,20 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
 
       {selectedAction && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">{selectedAction.title}</h2>
-            <p className="mb-4">O quê: {selectedAction.what}</p>
-            <p className="mb-4">Por que: {selectedAction.why}</p>
-            <p className="mb-4">Quando: {selectedAction.when}</p>
-            <p className="mb-4">Onde: {selectedAction.where}</p>
-            <p className="mb-4">Quem: {selectedAction.who}</p>
-            <p className="mb-4">Quanto:  {selectedAction.howMuch}</p>
-            <p className="mb-4 h-26">Texto de conclusão: {selectedAction.conclusionText}</p>
-            <p className="mb-4">Status: {getActionStatusText(selectedAction.status)}</p>
+          <div className="bg-white rounded-lg p-8 w-full max-w-lg">
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">{selectedAction.title}</h2>
+            <div className="mb-6 space-y-4">
+              <p className="text-gray-700"><span className="font-bold">O quê:</span> {selectedAction.what}</p>
+              <p className="text-gray-700"><span className="font-bold">Por que:</span> {selectedAction.why}</p>
+              <p className="text-gray-700"><span className="font-bold">Quando:</span> {selectedAction.when}</p>
+              <p className="text-gray-700"><span className="font-bold">Onde:</span> {selectedAction.where}</p>
+              <p className="text-gray-700"><span className="font-bold">Quem:</span> {selectedAction.who}</p>
+              <p className="text-gray-700"><span className="font-bold">Quanto:</span> {selectedAction.howMuch}</p>
+              {selectedAction.conclusionText && (
+                <p className="text-gray-700"><span className="font-bold">Texto de conclusão:</span> {selectedAction.conclusionText}</p>
+              )}
+              <p className="text-gray-700"><span className="font-bold">Status:</span> {getActionStatusText(selectedAction.status)}</p>
+            </div>
 
             {selectedAction.status === 0 && (
               <button
@@ -329,7 +330,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
                     return prev;
                   });
                 }}
-                className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+                className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg mb-4 hover:bg-blue-700 transition"
               >
                 Iniciar Ação
               </button>
@@ -337,22 +338,22 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
             {selectedAction.status === 1 && (
               <button
                 onClick={() => handleCompleteAction(selectedAction.id)}
-                className="bg-green-500 text-white px-4 py-2 rounded mb-4"
+                className="w-full bg-green-600 text-white px-4 py-3 rounded-lg mb-4 hover:bg-green-700 transition"
               >
                 Completar Ação
               </button>
             )}
-            {selectedAction.status === 4 && (
-              <div className="mb-4">
+            {selectedAction.status === 4 && !selectedAction.conclusionText && (
+              <div className="mb-6">
                 <textarea
                   value={conclusionText}
                   onChange={(e) => setConclusionText(e.target.value)}
-                  placeholder="Texto de conclusão"
-                  className="w-full p-2 border rounded mb-2"
+                  placeholder="Digite o texto de conclusão"
+                  className="w-full p-4 border border-gray-300 rounded-lg mb-4"
                 />
                 <button
                   onClick={() => handleSaveConclusionText(selectedAction.id)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className="w-full bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition"
                 >
                   Salvar Texto de Conclusão
                 </button>
@@ -361,7 +362,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
 
             <button
               onClick={() => handleCloseModal()}
-              className="bg-red-500 text-white px-4 py-2 rounded"
+              className="w-full bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition"
             >
               Fechar
             </button>

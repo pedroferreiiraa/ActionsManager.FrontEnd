@@ -251,9 +251,9 @@
         if (!token) {
           throw new Error('Token de autorização não encontrado.');
         }
-
+  
         const url = `http://localhost:5000/api/projects/${projectId}/conclusion`;
-        
+  
         const response = await fetch(url, {
           method: 'PATCH',
           headers: {
@@ -265,11 +265,11 @@
             conclusionText: text
           })
         });
-
+  
         if (!response.ok) {
           throw new Error('Erro ao salvar o texto de conclusão.');
         }
-
+  
         setProjectConclusionText(text);
         setShowConclusionEditor(false);
       } catch (error: any) {
@@ -347,6 +347,7 @@
           >
             Voltar
           </button>
+          
           <div className="flex gap-4">
             {project.status === 0 && (
               <button
@@ -454,50 +455,52 @@
           </div>
 
           {project.status === 4 && (
-            <div className="mt-8">
-              {showConclusionEditor ? (
-                <>
-                  <label htmlFor="conclusionText" className="block text-lg font-bold mb-2">
-                    Texto de Conclusão:
-                  </label>
-                  <textarea
-                    id="conclusionText"
-                    value={conclusionText}
-                    onChange={(e) => setConclusionText(e.target.value)}
-                    className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-                    placeholder="Digite o texto de conclusão do projeto"
-                    rows={4}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleSaveConclusionText(project.id, conclusionText)}
-                    className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
-                  >
-                    Salvar Texto de Conclusão
-                  </button>
-                </>
-              ) : (
-                <div className="mt-8">
-                  <p className="font-bold text-lg">Conclusão do Projeto:</p>
-                  <p className="text-gray-700">{projectConclusionText}</p>
-                  <button
-                    onClick={() => setShowConclusionEditor(true)}
-                    className="mt-4 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
-                  >
-                    Editar Conclusão
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          <ProjectActions projectId={project.id} token={token} />
-        </div>
+          <div className="mt-8">
+            {projectConclusionText ? (
+              <div>
+                <p className="font-bold text-lg">Conclusão do Projeto:</p>
+                <p className="text-gray-700">{projectConclusionText}</p>
+               
+              </div>
+            ) : showConclusionEditor ? (
+              <>
+                <label htmlFor="conclusionText" className="block text-lg font-bold mb-2">
+                  Texto de Conclusão:
+                </label>
+                <textarea
+                  id="conclusionText"
+                  value={conclusionText}
+                  onChange={(e) => setConclusionText(e.target.value)}
+                  className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+                  placeholder="Digite o texto de conclusão do projeto"
+                  rows={4}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleSaveConclusionText(project.id, conclusionText)}
+                  className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
+                >
+                  Salvar Texto de Conclusão
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setShowConclusionEditor(true)}
+                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
+              >
+                Adicionar Texto de Conclusão
+              </button>
+            )}
+          </div>
+        )}
+      <ProjectActions projectId={project.id} token={token} />
       </div>
-    ) : (
-      <div className="text-gray-500">Projeto não encontrado.</div>
-      
-    );
+    </div>
+  ) : (
+    <div className="text-gray-500">Projeto não encontrado.</div>
+  );
+
+
    
   };
 
