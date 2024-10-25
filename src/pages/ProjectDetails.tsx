@@ -21,6 +21,11 @@
     conclusionText: string;
   }
 
+  interface Action {
+    id: number;
+    status: number;
+  }
+
   interface User {
     id: number;
     fullName: string;
@@ -49,6 +54,7 @@
     const [showConclusionEditor, setShowConclusionEditor] = useState<boolean>(false);
     const [conclusionText, setConclusionText] = useState<string>('');
     const [projectConclusionText, setProjectConclusionText] = useState<string>('');
+    const [actions, setActions] = useState<Action[]>([]);
 
     
 
@@ -61,7 +67,7 @@
       }
     }, [navigate]);
 
-    const fetchUserDetails = async (userId: number, token: string, setUser: Function, setError: Function) => {
+    const fetchUserDetails = async (userId: number) => {
       try {
         const userUrl = `http://localhost:5000/api/users/${userId}`;
         const userResponse = await fetch(userUrl, {
@@ -70,7 +76,7 @@
             'Content-Type': 'application/json',
           },
         });
-    
+  
         if (userResponse.ok) {
           const userData = await userResponse.json();
           setUser(userData);
@@ -80,24 +86,15 @@
       }
     };
     
-    const fetchProjectDetails = async (
-      id: number,
-      token: string,
-      setProject: Function,
-      setConclusionText: Function,
-      setProjectConclusionText: Function,
-      setUser: Function,
-      setError: Function,
-      setLoading: Function
-    ) => {
+    const fetchProjectDetails = async () => {
       try {
         setLoading(true);
         setError('');
-    
+  
         if (!token) {
           throw new Error('Token de autorização não encontrado.');
         }
-    
+  
         const projectUrl = `http://localhost:5000/api/projects/${id}`;
         const projectResponse = await fetch(projectUrl, {
           method: 'GET',
@@ -106,23 +103,22 @@
             Authorization: `Bearer ${token}`,
           },
         });
-    
+  
         if (!projectResponse.ok) {
           throw new Error('Erro ao buscar os detalhes do projeto.');
         }
-    
+  
         const projectData = await projectResponse.json();
-        if (projectData) {
-          setProject(projectData);
-          setConclusionText(projectData.conclusionText || '');
-          setProjectConclusionText(projectData.conclusionText || '');
-    
-          // Fetch user details if we have a userId
-          if (projectData.userId) {
-            await fetchUserDetails(projectData.userId, token, setUser, setError);
-          }
-        } else {
-          throw new Error('Projeto não encontrado.');
+        setProject(projectData);
+        setConclusionText(projectData.conclusionText || '');
+        setProjectConclusionText(projectData.conclusionText || '');
+  
+        if (projectData.userId) {
+          await fetchUserDetails(projectData.userId);
+        }
+  
+        if (projectData.actionIds && projectData.actionIds.length > 0) {
+          await fetchAllActionsStatus(projectData.actionIds);
         }
       } catch (error: any) {
         setError(error.message);
@@ -130,19 +126,49 @@
         setLoading(false);
       }
     };
+  
+    const fetchActionStatus = async (actionId: number): Promise<Action | null> => {
+      try {
+        const actionUrl = `http://localhost:5000/api/actions/${actionId}`;
+        const actionResponse = await fetch(actionUrl, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+    
+        if (actionResponse.ok) {
+          const jsonResponse = await actionResponse.json();
+          console.log(`Dados da ação com ID ${actionId}:`, jsonResponse);
+    
+          // Extrair a ação do campo 'data'
+          return jsonResponse.data || null;
+        } else {
+          throw new Error(`Erro ao buscar a ação com ID ${actionId}.`);
+        }
+      } catch (error: any) {
+        setError(error.message);
+        return null;
+      }
+    };
+    
+    // Função para buscar o status de todas as ações do projeto
+    const fetchAllActionsStatus = async (actionIds: number[]) => {
+      const actionsData = await Promise.all(actionIds.map(fetchActionStatus));
+    
+      // Filtrar ações válidas e atualizar o estado
+      const validActions = actionsData.filter(action => action !== null) as Action[];
+      setActions(validActions);
+    
+      console.log('Ações recebidas:', validActions);
+    };
+  
+
+    const allActionsCompleted = actions.every(action => action.status === 4);
 
     useEffect(() => {
       if (token && id) {
-        fetchProjectDetails(
-          Number(id),
-          token,
-          setProject,
-          setConclusionText,
-          setProjectConclusionText,
-          setUser,
-          setError,
-          setLoading
-        );
+        fetchProjectDetails();
       }
     }, [id, token]);
 
@@ -199,20 +225,24 @@
     };
     
     const handleCompleteProject = async () => {
+      if (!allActionsCompleted) {
+        setError("Todas as ações devem estar concluídas antes de finalizar o projeto");
+        return;
+      }
+  
       if (project) {
         try {
           if (!token) {
             throw new Error('Token de autorização não encontrado.');
           }
-    
+  
           const url = `http://localhost:5000/api/projects/${project.id}/complete`;
-    
           const body = {
             id: project.id,
             command: "CompleteProject",
             conclusionText: conclusionText
           };
-    
+  
           const response = await fetch(url, {
             method: 'PUT',
             headers: {
@@ -221,25 +251,22 @@
             },
             body: JSON.stringify(body)
           });
-    
+  
           if (!response.ok) {
             const errorMessage = await response.text();
             throw new Error(`Erro ao completar o projeto: ${errorMessage}`);
           }
-    
+  
           const updatedProject = await response.json();
-
-          const newProjectState = {
+          setProject({
             ...project,
             ...updatedProject,
             status: 4,
             completedAt: new Date().toISOString()
-          }
-
-
-          setProject(newProjectState);
+          });
           setProjectConclusionText(conclusionText);
           setShowConclusionEditor(false);
+  
         } catch (error: any) {
           setError(error.message);
         }
@@ -359,15 +386,16 @@
             )}
             {project.status === 1 && (
               <>
-                <button
-                  onClick={() => {
-                    setShowConclusionEditor(true);
-                    handleCompleteProject();
-                  }}
-                  className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 focus:outline-none"
-                >
-                  Completar Projeto
-                </button>
+               <button
+            onClick={handleCompleteProject}
+            disabled={!allActionsCompleted}
+            className={`px-6 py-3 rounded-lg focus:outline-none ${
+              allActionsCompleted ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            Completar Projeto
+          </button>
+            
                 <button
                   onClick={() => navigate(`/projeto/${project.id}/inserir-acao`)}
                   className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
