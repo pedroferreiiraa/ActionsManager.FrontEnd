@@ -2,10 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
 
+const decodeJWT = (token: string) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error('Token inválido');
+    return null;
+  }
+};
+
+const getUserIdFromToken = (token: string): number | null => {
+  const decoded = decodeJWT(token);
+  if (decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']) {
+    return parseInt(decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']);
+  }
+  return null;
+};
+
 const AddActionForm: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const [token, setToken] = useState<string>('');
+  const [, setUserId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     what: '',
@@ -19,7 +46,7 @@ const AddActionForm: React.FC = () => {
     originDate: new Date().toISOString(),
     status: 0,
     conclusionText: '',
-    userId: 1, // Este valor será atualizado com base no usuário logado
+    userId: 0
   });
   const [error, setError] = useState<string>('');
 
@@ -27,6 +54,14 @@ const AddActionForm: React.FC = () => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
+      const userIdFromToken = getUserIdFromToken(storedToken);
+      if (userIdFromToken) {
+        setUserId(userIdFromToken);
+        setFormData((prevData) => ({
+          ...prevData,
+          userId: userIdFromToken,
+        }));
+      }
     } else {
       navigate('/login');
     }
@@ -40,6 +75,7 @@ const AddActionForm: React.FC = () => {
     }));
   };
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -47,7 +83,6 @@ const AddActionForm: React.FC = () => {
         throw new Error('Token de autorização não encontrado.');
       }
 
-      // Cria a ação
       const createActionResponse = await fetch('http://localhost:5000/api/actions', {
         method: 'POST',
         headers: {
@@ -64,7 +99,6 @@ const AddActionForm: React.FC = () => {
 
       const createdAction = await createActionResponse.json();
 
-      // Vincula a ação ao projeto
       const associateUrl = `http://localhost:5000/api/projects/${projectId}/actions`;
       const associateResponse = await fetch(associateUrl, {
         method: 'POST',
@@ -83,12 +117,13 @@ const AddActionForm: React.FC = () => {
         throw new Error(`Erro ao associar a ação ao projeto: ${errorMessage}`);
       }
 
-      // Redireciona de volta para os detalhes do projeto
-      navigate(`/projeto/${projectId}`);
+      console.log(createdAction);
     } catch (error: any) {
       setError(error.message);
     }
   };
+
+
   return (
     <div className="p-8 max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
        <button
