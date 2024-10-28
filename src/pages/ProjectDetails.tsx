@@ -140,9 +140,7 @@
     
         if (actionResponse.ok) {
           const jsonResponse = await actionResponse.json();
-          console.log(`Dados da ação com ID ${actionId}:`, jsonResponse);
-    
-          // Extrair a ação do campo 'data'
+      
           return jsonResponse.data || null;
         } else {
           throw new Error(`Erro ao buscar a ação com ID ${actionId}.`);
@@ -153,7 +151,7 @@
       }
     };
     
-    // Função para buscar o status de todas as ações do projeto
+   
     const fetchAllActionsStatus = async (actionIds: number[]) => {
       const actionsData = await Promise.all(actionIds.map(fetchActionStatus));
     
@@ -161,10 +159,8 @@
       const validActions = actionsData.filter(action => action !== null) as Action[];
       setActions(validActions);
     
-      console.log('Ações recebidas:', validActions);
     };
   
-
     const allActionsCompleted = actions.every(action => action.status === 4);
 
     useEffect(() => {
@@ -212,11 +208,7 @@
             startedAt: new Date().toISOString()
           };
     
-          // Atualizar o estado do projeto
           setProject(newProjectState);
-    
-          // Log opcional para debug
-          console.log('Projeto atualizado:', newProjectState);
     
         } catch (error: any) {
           setError(error.message);
@@ -434,24 +426,27 @@
 
           <h1 className="text-4xl font-bold mb-8 text-center">{project.title}</h1>
           
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div>
-              <p className="font-bold text-lg">Origem do projeto:</p>
-              <p className="text-gray-700">{project.origin}</p>
-            </div>
-            <div>
-              <p className="font-bold text-lg">Número da Origem:</p>
-              <p className="text-gray-700">{project.originNumber}</p>
-            </div>
-            <div>
-              <p className="font-bold text-lg">Id do projeto:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-8">
+          <div>
+              <p className="font-bold text-lg">Nº Do projeto:</p>
               <p className="text-gray-700">{project.id}</p>
             </div>
-            
             <div>
               <p className="font-bold text-lg">Usuário Responsável:</p>
               <p className="text-gray-700">{user ? user.fullName : 'Carregando...'}</p>
             </div>
+            <div>
+              <p className="font-bold text-lg">Origem do projeto:</p>
+              <p className="text-gray-700">{project.origin}</p>
+            </div>
+            
+            <div>
+              <p className="font-bold text-lg">Número da Origem:</p>
+              <p className="text-gray-700">{project.originNumber}</p>
+            </div>
+            
+            
+            
             <div>
               <p className="font-bold text-lg">Data de Origem:</p>
               <p className="text-gray-700">{project.originDate}</p>

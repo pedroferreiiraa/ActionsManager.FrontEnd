@@ -235,7 +235,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
       setActions(newActionsState);
       setSelectedAction((prev) => (prev ? { ...prev, conclusionText: conclusionText } : null));
       setConclusionText('');
-      console.log("Texto de conclusão salvo: ", newActionsState);
+    
     } catch (error: any) {
       setError(error.message);
       console.error('Erro ao salvar texto de conclusão:', error);

@@ -87,7 +87,7 @@ const AddProject = () => {
             originNumber,
         };
 
-        console.log('Attempting to add project with the following data:', projectData);
+       navigate('/listar-projetos')
 
         fetch('http://localhost:5000/api/projects', {
             method: 'POST',
@@ -102,10 +102,6 @@ const AddProject = () => {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
-            })
-            .then((data) => {
-                console.log('Project added:', data);
-                navigate('/listar-projetos');
             })
             .catch((error) => {
                 console.error('Error adding project:', error);

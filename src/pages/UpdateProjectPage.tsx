@@ -61,7 +61,7 @@ const UpdateProjectPage: React.FC = () => {
         }
 
         const projectUrl = `http://localhost:5000/api/projects/${projectId}`;
-        console.log('Fetching project details from:', projectUrl); // Log para depuração
+       
 
         const projectResponse = await fetch(projectUrl, {
           method: 'GET',
@@ -77,7 +77,7 @@ const UpdateProjectPage: React.FC = () => {
         }
 
         const projectData = await projectResponse.json();
-        console.log('Project data fetched:', projectData); // Log para depuração
+    
 
         if (projectData) {
           setProject(projectData);
@@ -120,7 +120,7 @@ const UpdateProjectPage: React.FC = () => {
           originNumber: originNumber,
         };
 
-        console.log('Updating project with data:', updatedProject); // Log para depuração
+      
 
         const response = await fetch(updateUrl, {
           method: 'PUT',
@@ -136,7 +136,7 @@ const UpdateProjectPage: React.FC = () => {
           throw new Error(`Erro ao atualizar o projeto: ${errorMessage}`);
         }
 
-        console.log('Projeto atualizado com sucesso'); // Log para depuração
+    
 
         // Navega de volta à página de detalhes após a atualização
         navigate(`/projeto/${project.id}`);

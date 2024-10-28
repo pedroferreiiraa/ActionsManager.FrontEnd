@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useNavigate } from 'react-router-dom';
 import { FaChartBar, FaProjectDiagram, FaCheckCircle } from 'react-icons/fa';
@@ -19,6 +19,7 @@ interface Action {
   id: string;
   userId: string;
   projectId: string;
+  title: string; // Adicionado para descrever a ação
 }
 
 const decodeJWT = (token: string) => {
@@ -41,7 +42,7 @@ const Home = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [actions, setActions] = useState<Action[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [,setUserId] = useState<string | null>(null);
+  const [, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
@@ -50,32 +51,46 @@ const Home = () => {
       setUserId(decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || null);
     }
 
-    // Buscar projetos
-    fetch('http://localhost:5000/api/projects?pageNumber=1&pageSize=50', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    // Função para buscar todas as páginas de projetos
+    const fetchAllProjects = async () => {
+      let allProjects: Project[] = [];
+      let pageNumber = 1;
+      let totalPages = 1;
+
+      while (pageNumber <= totalPages) {
+        try {
+          const response = await fetch(`http://localhost:5000/api/projects?pageNumber=${pageNumber}&pageSize=10`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (data?.data && Array.isArray(data.data)) {
+            allProjects = [...allProjects, ...data.data.filter((project: Project) => !project.isDeleted)];
+            totalPages = data.totalPages;
+            pageNumber++;
+          } else {
+            console.error('Unexpected data format:', data);
+            break;
+          }
+        } catch (error) {
+          console.error('Error fetching projects:', error);
+          break;
         }
-        return response.json();
-      })
-      .then((data) => {
-        if (data?.data && Array.isArray(data.data)) {
-          // Filtrar projetos que não foram deletados
-          const filteredProjects = data.data.filter((project: Project) => !project.isDeleted);
-          setProjects(filteredProjects);
-        } else {
-          console.error('Unexpected data format:', data);
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching projects:', error);
-      });
+      }
+
+      setProjects(allProjects);
+    };
+
+    // Buscar todos os projetos
+    fetchAllProjects();
 
     // Buscar ações
     fetch('http://localhost:5000/api/actions', {
@@ -93,7 +108,7 @@ const Home = () => {
       })
       .then((data) => {
         if (data?.data && Array.isArray(data.data)) {
-          setActions(data.data);
+          setActions(data.data.reverse());
         } else {
           console.error('Unexpected data format:', data);
         }
@@ -129,13 +144,6 @@ const Home = () => {
 
   }, []);
 
-  // Função para pegar o título do projeto
-  const getProjectTitle = (projectId: string) => {
-    const project = projects.find((project) => project.id === projectId);
-    return project ? project.title : 'Projeto Desconhecido';
-  };
-
-  // Função para pegar o nome completo do usuário
   const getUserFullName = (userId: string) => {
     const user = users.find((user) => user.id === userId);
     return user ? user.fullName : 'Usuário Desconhecido';
@@ -222,7 +230,7 @@ const Home = () => {
           <ul>
             {actions.slice(0, 5).map((action) => (
               <li key={action.id} className="py-3 border-b last:border-none font-medium text-base text-gray-700">
-                {getUserFullName(action.userId)} adicionou uma ação ao {getProjectTitle(action.projectId)}.
+                {getUserFullName(action.userId)} inseriu a seguinte ação: {action.title}.
               </li>
             ))}
           </ul>
@@ -230,7 +238,6 @@ const Home = () => {
       </div>
     </div>
   );
-  
 };
 
 export default Home;
