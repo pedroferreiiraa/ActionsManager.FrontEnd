@@ -117,7 +117,7 @@ const AddActionForm: React.FC = () => {
         throw new Error(`Erro ao associar a ação ao projeto: ${errorMessage}`);
       }
 
-      console.log(createdAction);
+      navigate(-1)
     } catch (error: any) {
       setError(error.message);
     }

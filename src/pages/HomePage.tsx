@@ -222,7 +222,7 @@ const Home = () => {
           <ul>
             {actions.slice(0, 5).map((action) => (
               <li key={action.id} className="py-3 border-b last:border-none font-medium text-base text-gray-700">
-                {getUserFullName(action.userId)} adicionou uma ação ao projeto {getProjectTitle(action.projectId)}.
+                {getUserFullName(action.userId)} adicionou uma ação ao {getProjectTitle(action.projectId)}.
               </li>
             ))}
           </ul>

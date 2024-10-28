@@ -14,6 +14,7 @@ const Login: React.FC = () => {
     setLoading(true);
     setError({});
 
+  
     try {
       const response = await fetch('http://localhost:5000/api/users/login', {
         method: 'PUT',
@@ -45,6 +46,11 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const handleRegisterClick = () => {
+    navigate('/registro'); // Substitua '/registro' pela rota da página de registro
+  };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -106,7 +112,15 @@ const Login: React.FC = () => {
             >
               Entrar
             </button>
+            <button
+              type="button"
+              className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 focus:outline-none"
+              onClick={handleRegisterClick}
+            >
+              Cadastrar-se
+            </button>
           </form>
+          
         )}
       </div>
     </div>
