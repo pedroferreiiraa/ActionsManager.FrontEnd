@@ -70,7 +70,7 @@
 
     const fetchUserDetails = async (userId: number) => {
       try {
-        const userUrl = `http://localhost:5000/api/users/${userId}`;
+        const userUrl = `http://192.168.16.194:5000/api/users/${userId}`;
         const userResponse = await fetch(userUrl, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -82,6 +82,7 @@
           const userData = await userResponse.json();
           setUser(userData);
         }
+        // eslint-disable-next-line
       } catch (error: any) {
         setError(error.message);
       }
@@ -96,7 +97,7 @@
           throw new Error('Token de autorização não encontrado.');
         }
   
-        const projectUrl = `http://localhost:5000/api/projects/${id}`;
+        const projectUrl = `http://192.168.16.194:5000/api/projects/${id}`;
         const projectResponse = await fetch(projectUrl, {
           method: 'GET',
           headers: {
@@ -121,6 +122,7 @@
         if (projectData.actionIds && projectData.actionIds.length > 0) {
           await fetchAllActionsStatus(projectData.actionIds);
         }
+        // eslint-disable-next-line
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -130,7 +132,7 @@
   
     const fetchActionStatus = async (actionId: number): Promise<Action | null> => {
       try {
-        const actionUrl = `http://localhost:5000/api/actions/${actionId}`;
+        const actionUrl = `http://192.168.16.194:5000/api/actions/${actionId}`;
         const actionResponse = await fetch(actionUrl, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -145,6 +147,7 @@
         } else {
           throw new Error(`Erro ao buscar a ação com ID ${actionId}.`);
         }
+        // eslint-disable-next-line
       } catch (error: any) {
         setError(error.message);
         return null;
@@ -176,7 +179,7 @@
             throw new Error('Token de autorização não encontrado.');
           }
     
-          const url = `http://localhost:5000/api/projects/${project.id}/start`;
+          const url = `http://192.168.16.194:5000/api/projects/${project.id}/start`;
     
           const body = {
             id: project.id,
@@ -209,7 +212,7 @@
           };
     
           setProject(newProjectState);
-    
+    // eslint-disable-next-line
         } catch (error: any) {
           setError(error.message);
           console.error('Erro ao iniciar projeto:', error);
@@ -229,7 +232,7 @@
             throw new Error('Token de autorização não encontrado.');
           }
   
-          const url = `http://localhost:5000/api/projects/${project.id}/complete`;
+          const url = `http://192.168.16.194:5000/api/projects/${project.id}/complete`;
           const body = {
             id: project.id,
             command: "CompleteProject",
@@ -259,7 +262,7 @@
           });
           setProjectConclusionText(conclusionText);
           setShowConclusionEditor(false);
-  
+  // eslint-disable-next-line
         } catch (error: any) {
           setError(error.message);
         }
@@ -272,7 +275,7 @@
           throw new Error('Token de autorização não encontrado.');
         }
   
-        const url = `http://localhost:5000/api/projects/${projectId}/conclusion`;
+        const url = `http://192.168.16.194:5000/api/projects/${projectId}/conclusion`;
   
         const response = await fetch(url, {
           method: 'PATCH',
@@ -292,6 +295,7 @@
   
         setProjectConclusionText(text);
         setShowConclusionEditor(false);
+        // eslint-disable-next-line
       } catch (error: any) {
         setError(error.message);
       }
@@ -307,7 +311,7 @@
           throw new Error('Token de autorização não encontrado.');
         }
     
-        const url = `http://localhost:5000/api/projects/${project.id}/delete`;
+        const url = `http://192.168.16.194:5000/api/projects/${project.id}/delete`;
     
         const body = {
           id: project.id,
@@ -329,6 +333,7 @@
         }
     
         navigate(-1);
+        // eslint-disable-next-line
       } catch (error: any) {
         setError(error.message);
       }

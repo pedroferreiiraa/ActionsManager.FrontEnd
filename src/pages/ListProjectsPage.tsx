@@ -9,7 +9,8 @@ interface Project {
     projectNumber: number;
     status: number;
     originDate: string;
-    isDeleted: boolean;  // Propriedade isDeleted para controle de exclusão
+    isDeleted: boolean;  
+    createdAt: string;// Propriedade isDeleted para controle de exclusão
 }
 
 const ListProjects: React.FC = () => {
@@ -63,7 +64,7 @@ const ListProjects: React.FC = () => {
               setLoading(true);
               setError('');
   
-              const url = `http://localhost:5000/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+              const url = `http://192.168.16.194:5002/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
   
               const response = await fetch(url, {
                   method: 'GET',
@@ -88,24 +89,27 @@ const ListProjects: React.FC = () => {
               }
   
               // Ordenar os projetos para que os mais recentes apareçam primeiro
-              const sortedProjects = filteredProjects.sort((a: any, b: any) => {
-                  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+              const sortedProjects = filteredProjects.sort((a: Project, b: Project) => {
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
               });
+              
   
               // Atualizar os projetos no estado
               setProjects(sortedProjects);
               setTotalPages(data.totalPages);
-          } catch (error: any) {
+          } catch (error: unknown) {
+            if (error instanceof Error) {
               setError(error.message);
+            } else {
+              setError("Ocorreu um erro desconhecido.");
+            }
           } finally {
-              setLoading(false);
+            setLoading(false);
           }
       };
   
       fetchProjects();
   }, [searchTerm, pageNumber, statusFilter]);
-  
-  
   
 
     const handleSearch = (e: React.FormEvent) => {
@@ -113,13 +117,13 @@ const ListProjects: React.FC = () => {
         setPageNumber(1);
     };
 
-        const handlePreviousPage = () => {
-          if (pageNumber > 1) {
+    const handlePreviousPage = () => {
+        if (pageNumber > 1) {
               setPageNumber(pageNumber - 1);
           }
       };
       
-      const handleNextPage = () => {
+    const handleNextPage = () => {
           if (pageNumber < totalPages) {
               setPageNumber(pageNumber + 1);
           }
@@ -134,7 +138,7 @@ const ListProjects: React.FC = () => {
     return (
         <div className="p-8 max-w-4xl mx-auto bg-gray-50 min-h-screen">
         {/* Botão Adicionar Projeto */}
-        <div className="flex justify-start mb-6">
+        {/* <div className="flex justify-start mb-6">
           <button
             onClick={() => navigate("/adicionar-projeto")}
             className="bg-blue-600 text-white px-5 py-3 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
@@ -142,7 +146,17 @@ const ListProjects: React.FC = () => {
             Adicionar Projeto
           </button>
         </div>
-      
+       */}
+
+      <div className="flex justify-start mb-6">
+        <button
+          onClick={() => navigate("/home")}
+          className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
+          >
+          Voltar
+          </button>
+      </div>
+
         {/* Formulário de Busca */}
         <form onSubmit={handleSearch} className="flex items-center mb-8">
           <input

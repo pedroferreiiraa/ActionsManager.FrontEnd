@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Notification from '../components/Notification'; // Importe o componente de notificação
+import Notification from '../components/Notification';
 
 interface RegisterFormData {
   fullName: string;
@@ -27,26 +27,13 @@ const RegisterPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
-    } else {
-      navigate('/login'); // Redireciona para login se o token não estiver presente
-    }
-  }, [navigate]);
 
   useEffect(() => {
     const fetchDepartments = async () => {
-      if (!token) return;
-
       try {
-        const response = await fetch('http://localhost:5000/api/departments', {
+        const response = await fetch('http://192.168.16.194:5002/api/departments', {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -54,13 +41,14 @@ const RegisterPage: React.FC = () => {
           throw new Error('Erro ao buscar departamentos');
         }
         const data = await response.json();
-        setDepartments(data.data); // Definimos a lista de departamentos no estado
+        setDepartments(data.data); // Define a lista de departamentos no estado
       } catch (err: any) {
         setError(err.message);
       }
     };
+
     fetchDepartments();
-  }, [token]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -79,7 +67,7 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/users', { // Altere para a URL correta
+      const response = await fetch('http://192.168.16.194:5002/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,8 +79,8 @@ const RegisterPage: React.FC = () => {
         throw new Error('Erro ao registrar o usuário. Tente novamente.');
       }
 
-      setShowNotification(true); // Exibe a notificação de sucesso
-      setTimeout(() => navigate('/login'), 1000); // Redireciona após 3 segundos
+      setShowNotification(true);
+      setTimeout(() => navigate('/login'), 1000); // Redireciona após 1 segundo
     } catch (err: any) {
       setError(err.message);
     }
@@ -145,7 +133,7 @@ const RegisterPage: React.FC = () => {
           <div>
             <label className="block text-gray-700">Nível no Sistema</label>
             <input
-                disabled
+              disabled
               type="text"
               name="role"
               value={formData.role}
@@ -191,7 +179,6 @@ const RegisterPage: React.FC = () => {
           </button>
         </p>
         
-        {/* Notificação de Sucesso */}
         {showNotification && (
           <Notification
             message="Registro realizado com sucesso!"

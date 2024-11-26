@@ -87,9 +87,9 @@ const AddProject = () => {
             originNumber,
         };
 
-       navigate('/listar-projetos')
+       navigate('/home')
 
-        fetch('http://localhost:5000/api/projects', {
+        fetch('http://192.168.16.194:5002/api/projects', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
