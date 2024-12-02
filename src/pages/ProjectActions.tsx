@@ -75,6 +75,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
 
       const projectActions = actionsFromResponse.data.filter((action: Action) => action.projectId === projectId);
       setActions(projectActions);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -137,6 +138,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
         }));
         
         fetchActions();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         setError(error.message);
       }
@@ -189,6 +191,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
         }));
 
         fetchActions();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         setError(error.message);
       }
@@ -236,6 +239,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
       setSelectedAction((prev) => (prev ? { ...prev, conclusionText: conclusionText } : null));
       setConclusionText('');
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.message);
       console.error('Erro ao salvar texto de conclusão:', error);
