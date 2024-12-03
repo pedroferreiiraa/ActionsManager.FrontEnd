@@ -10,12 +10,13 @@ import ProjectDetails from './pages/ProjectDetails';
 import AddAction from './pages/AddAction';
 import UpdateProjectPage from './pages/UpdateProjectPage';
 import RegisterPage from './pages/RegisterPage';
-import DepartmentProjects from './pages/ListDeparmentProjects'
+import ListProjectsDepartment from './pages/ListProjectsDepartmentPage';
+import ListSelfProjects from './pages/ListSelfProjects';
 // Layout para rotas que terão a Navbar
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
   <>
     <Navbar />
-    <div className="container mx-auto p-4">{children}</div>
+    <div className="container mx-auto">{children}</div>
   </>
 );
 
@@ -51,10 +52,18 @@ const App: React.FC = () => {
           }
         />
         <Route
+          path="/listar-meus-projetos" // Adicione esta rota
+          element={
+            <Layout>
+              <ListSelfProjects />
+            </Layout>
+          }
+        />
+        <Route
           path="/listar-projetos-setor" // Adicione esta rota
           element={
             <Layout>
-              <DepartmentProjects />
+              <ListProjectsDepartment />
             </Layout>
           }
         />

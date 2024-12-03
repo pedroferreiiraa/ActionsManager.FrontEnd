@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useNavigate } from 'react-router-dom';
 import { FaChartBar, FaProjectDiagram, FaCheckCircle } from 'react-icons/fa';
-import { getRole } from '../utils/authUtils';
+// import { getRole } from '../utils/authUtils';
 
 interface Project {
   id: string;
@@ -147,7 +147,7 @@ const Home = () => {
 
   }, []);
 
-  const role = getRole();
+  // const role = getRole();
 
   const getUserFullName = (userId: string) => {
     const user = users.find((user) => user.id === userId);
@@ -162,10 +162,10 @@ const Home = () => {
   const ongoingProjectsCount = projects.filter((project) => project.status !== 4).length;
 
   return (
-    <div className="p-6 md:p-8 bg-gray-50 min-h-screen">
+    <div className="p-1 bg-gray-50 min-h-screen sm:p p-1">
       {/* Boas-vindas e atalhos */}
       <div className="mb-6">
-        <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-6">
+        {/* <div className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-6">
           <button
             onClick={() => navigate('/adicionar-projeto')}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all md:px-6"
@@ -203,7 +203,7 @@ const Home = () => {
         </button>
       )}
 
-        </div>
+        </div> */}
       </div>
   
       {/* Estatísticas resumidas */}

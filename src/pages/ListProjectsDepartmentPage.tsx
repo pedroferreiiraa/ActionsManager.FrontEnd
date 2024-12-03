@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
-import { FaArrowLeft, FaArrowRight, FaSearch } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 interface Project {
     id: string;
@@ -13,14 +15,32 @@ interface Project {
     createdAt: string;// Propriedade isDeleted para controle de exclusão
 }
 
-const ListProjects: React.FC = () => {
+interface User {
+  id: number;
+  departmentId: number;
+}
+
+interface Department {
+  id: number;
+  name: string;
+}
+
+interface DecodedToken {
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string;
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": string;
+  exp: number;
+}
+
+const ListProjectsDepartment: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
-    const [statusFilter, setStatusFilter] = useState<number>(-1); // -1 significa "Todos"
+    const [statusFilter, setStatusFilter] = useState<number>(-1); 
+    const [, setDepartmentName] = useState<string>("");
+
     const navigate = useNavigate();
 
     // Função para definir as classes de cor com base no status
@@ -63,8 +83,34 @@ const ListProjects: React.FC = () => {
           try {
               setLoading(true);
               setError('');
+
+              const token = localStorage.getItem("token");
+              if (!token) {
+                throw new Error("Token não encontrado.");
+              }
+        
+              const decoded: DecodedToken = jwtDecode(token);
+              const leaderId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+        
+              if (!leaderId) {
+                throw new Error("Leader ID não encontrado no token.");
+              }
+        
+              // Fetch informações do usuário para obter o ID do departamento
+              const userResponse = await axios.get(`http://192.168.16.194:5002/api/users/${leaderId}`);
+              const userData: User = userResponse.data;
+              const departmentId = userData.departmentId;
+        
+              if (!departmentId) {
+                throw new Error("Departamento não encontrado para o usuário.");
+              }
+        
+              // Fetch nome do departamento
+              const departmentResponse = await axios.get(`http://192.168.16.194:5002/api/departments/${departmentId}`);
+              const departmentData: Department = departmentResponse.data;
+              setDepartmentName(departmentData.name || "Departamento não identificado");
   
-              const url = `http://192.168.16.194:5002/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+              const url = `http://192.168.16.194:5002/api/projects/departments/${departmentId}?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
   
               const response = await fetch(url, {
                   method: 'GET',
@@ -153,7 +199,7 @@ const ListProjects: React.FC = () => {
           onClick={() => navigate("/home")}
           className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
           >
-          Voltar    
+          Voltar
           </button>
       </div>
 
@@ -235,28 +281,24 @@ const ListProjects: React.FC = () => {
       
             {/* Paginação */}
             <div className="flex justify-between items-center mt-6">
-            <button
-              onClick={handlePreviousPage}
-              disabled={pageNumber === 1}
-              className="bg-gray-300 text-gray-700 px-3 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
-            >
-              <FaArrowLeft className="text-lg" />
-            </button>
-            
-            <span className="text-sm text-gray-600">
-              Página {pageNumber} de {totalPages}
-            </span>
-
-            <button
-              onClick={handleNextPage}
-              disabled={pageNumber === totalPages}
-              className="bg-gray-300 text-gray-700 px-3 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
-            >
-              <FaArrowRight className="text-lg" />
-            </button>
-          </div>
-
-
+              <button
+                onClick={handlePreviousPage}
+                disabled={pageNumber === 1}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
+              >
+                Página Anterior
+              </button>
+              <span className="text-sm text-gray-600">
+                Página {pageNumber} de {totalPages}
+              </span>
+              <button
+                onClick={handleNextPage}
+                disabled={pageNumber === totalPages}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
+              >
+                Próxima Página
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -264,4 +306,4 @@ const ListProjects: React.FC = () => {
     );
 };
 
-export default ListProjects;
+export default ListProjectsDepartment;

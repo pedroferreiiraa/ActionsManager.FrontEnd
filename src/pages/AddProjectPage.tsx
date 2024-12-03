@@ -110,7 +110,16 @@ const AddProject = () => {
     };
 
     return (
+      
         <div className="p-6 md:p-8 max-w-lg mx-auto bg-white rounded-lg shadow-lg">
+
+          <button
+          onClick={() => navigate("/home")}
+          className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all mb-2"
+          >
+          Voltar
+          </button>
+
   <h2 className="text-2xl font-semibold mb-6 text-gray-800">Adicionar Novo Projeto</h2>
   
   <div className="mb-5">

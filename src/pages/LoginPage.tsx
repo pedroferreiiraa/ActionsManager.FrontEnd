@@ -47,9 +47,9 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleRegisterClick = () => {
-    navigate('/registro'); // Substitua '/registro' pela rota da página de registro
-  };
+  // const handleRegisterClick = () => {
+  //   navigate('/registro'); // Substitua '/registro' pela rota da página de registro
+  // };
 
 
   return (
@@ -112,13 +112,13 @@ const Login: React.FC = () => {
             >
               Entrar
             </button>
-            <button
+            {/* <button
               type="button"
               className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 focus:outline-none"
               onClick={handleRegisterClick}
             >
               Cadastrar-se
-            </button>
+            </button> */}
           </form>
           
         )}

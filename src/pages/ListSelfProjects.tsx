@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
 import { FaArrowLeft, FaArrowRight, FaSearch } from 'react-icons/fa';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 interface Project {
     id: string;
@@ -13,7 +15,19 @@ interface Project {
     createdAt: string;// Propriedade isDeleted para controle de exclusão
 }
 
-const ListProjects: React.FC = () => {
+interface User {
+  id: number;
+  departmentId: number;
+}
+
+
+interface DecodedToken {
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string;
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": string;
+  exp: number;
+}
+
+const ListSelfProjects: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
@@ -63,8 +77,27 @@ const ListProjects: React.FC = () => {
           try {
               setLoading(true);
               setError('');
+
+              const token = localStorage.getItem("token");
+              if (!token) {
+                throw new Error("Token não encontrado.");
+              }
+        
+              const decoded: DecodedToken = jwtDecode(token);
+              const tokenId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+        
+              if (!tokenId) {
+                throw new Error("Leader ID não encontrado no token.");
+              }
+        
+              // Fetch informações do usuário para obter o ID do departamento
+              const userResponse = await axios.get(`http://192.168.16.194:5002/api/users/${tokenId}`);
+              const userData: User = userResponse.data;
+              const userId = userData.id
   
-              const url = `http://192.168.16.194:5002/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+              const url = `http://192.168.16.194:5002/api/projects/self/${userId}
+
+`;
   
               const response = await fetch(url, {
                   method: 'GET',
@@ -198,7 +231,7 @@ const ListProjects: React.FC = () => {
             <div className="w-10 h-10 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
           </div>
         ) : error ? (
-          <div className="text-red-500 text-center mb-6">{error}</div>
+          <div className="text-red-500 text-center mb-6">Não há projetos</div>
         ) : (
           <div className="bg-white p-6 rounded-lg shadow-lg">
             {/* Lista de Projetos */}
@@ -264,4 +297,4 @@ const ListProjects: React.FC = () => {
     );
 };
 
-export default ListProjects;
+export default ListSelfProjects;
