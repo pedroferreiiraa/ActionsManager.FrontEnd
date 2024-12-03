@@ -42,6 +42,7 @@ const RegisterPage: React.FC = () => {
         }
         const data = await response.json();
         setDepartments(data.data); // Define a lista de departamentos no estado
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setError(err.message);
       }
@@ -81,6 +82,7 @@ const RegisterPage: React.FC = () => {
 
       setShowNotification(true);
       setTimeout(() => navigate('/login'), 1000); // Redireciona após 1 segundo
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
     }
@@ -169,15 +171,6 @@ const RegisterPage: React.FC = () => {
           </button>
         </form>
 
-        <p className="text-center text-gray-600 text-sm">
-          Já tem uma conta?{' '}
-          <button
-            onClick={() => navigate('/login')}
-            className="text-blue-500 hover:underline focus:outline-none"
-          >
-            Entre aqui
-          </button>
-        </p>
         
         {showNotification && (
           <Notification

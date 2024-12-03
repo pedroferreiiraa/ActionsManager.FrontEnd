@@ -368,7 +368,7 @@
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="bg-gray-200 text-gray-700 px-5 py-3 rounded-lg hover:bg-gray-300 focus:outline-none shadow-md transition-all"
+            className="bg-gray-200 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-300 focus:outline-none shadow-md transition-all"
           >
             Voltar
           </button>

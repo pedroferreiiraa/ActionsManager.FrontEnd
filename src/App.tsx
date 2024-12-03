@@ -10,7 +10,7 @@ import ProjectDetails from './pages/ProjectDetails';
 import AddAction from './pages/AddAction';
 import UpdateProjectPage from './pages/UpdateProjectPage';
 import RegisterPage from './pages/RegisterPage';
-
+import DepartmentProjects from './pages/ListDeparmentProjects'
 // Layout para rotas que terão a Navbar
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
   <>
@@ -44,6 +44,22 @@ const App: React.FC = () => {
         />
         <Route
           path="/listar-projetos" // Adicione esta rota
+          element={
+            <Layout>
+              <ListProjects />
+            </Layout>
+          }
+        />
+        <Route
+          path="/listar-projetos-setor" // Adicione esta rota
+          element={
+            <Layout>
+              <DepartmentProjects />
+            </Layout>
+          }
+        />
+        <Route
+          path="/listar-meus-projetos" // Adicione esta rota
           element={
             <Layout>
               <ListProjects />

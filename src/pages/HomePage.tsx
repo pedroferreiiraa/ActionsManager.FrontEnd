@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useNavigate } from 'react-router-dom';
 import { FaChartBar, FaProjectDiagram, FaCheckCircle } from 'react-icons/fa';
+import { getRole } from '../utils/authUtils';
 
 interface Project {
   id: string;
@@ -142,12 +143,17 @@ const Home = () => {
         console.error('Error fetching users:', error);
       });
 
+     
+
   }, []);
+
+  const role = getRole();
 
   const getUserFullName = (userId: string) => {
     const user = users.find((user) => user.id === userId);
     return user ? user.fullName : 'Usuário Desconhecido';
   };
+
 
   // Filtrar projetos concluídos
   const completedProjectsCount = projects.filter((project) => project.status === 4).length;
@@ -172,6 +178,31 @@ const Home = () => {
           >
             Listar Projetos
           </button>
+          {role === 'Admin' && (
+        <button
+          onClick={() => navigate('/registro')}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all md:px-6"
+        >
+          Adicionar colaborador
+        </button>
+      )}
+      {role === 'Lider' && (
+        <button
+          onClick={() => navigate('/listar-projetos-setor')}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all md:px-6"
+        >
+          Listar projetos do setor
+        </button>
+      )}
+      {role === 'Colaborador' && (
+        <button
+          onClick={() => navigate('/')}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all md:px-6"
+        >
+          Listar meus projetos
+        </button>
+      )}
+
         </div>
       </div>
   

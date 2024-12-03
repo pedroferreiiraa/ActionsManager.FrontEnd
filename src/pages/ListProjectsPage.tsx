@@ -172,7 +172,7 @@ const ListProjects: React.FC = () => {
           >
             <FaSearch />
           </button>
-        </form>
+        </form> 
       
         {/* Filtro por Status */}
         <div className="mb-6">
