@@ -13,9 +13,42 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError({});
-
   
     try {
+      // Fetch para verificar se o usuário existe
+      const userResponse = await fetch(`http://192.168.16.194:5002/api/users?email=${email}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      const userData = await userResponse.json();
+  
+      // Verifica se a requisição foi bem-sucedida e se há algum usuário com o e-mail fornecido
+      if (!userResponse.ok || !userData.data || userData.data.length === 0) {
+        setError({ general: 'Usuário não encontrado. Verifique suas credenciais.' });
+        setLoading(false);
+        return;
+      }
+  
+      // Filtra o usuário com o e-mail fornecido
+      // eslint-disable-next-line 
+      const user = userData.data.find((u: any) => u.email === email);
+
+      // Caso o usuário não exista ou esteja desativado
+      if (!user) {
+        setError({ general: 'Usuário não encontrado. Verifique suas credenciais.' });
+        setLoading(false);
+        return;
+      }
+      if (user.isDeleted) {
+        setError({ general: 'Usuário desativado. Contate o administrador.' });
+        setLoading(false);
+        return;
+      }
+  
+      // Faz o login se o usuário não estiver deletado
       const response = await fetch('http://192.168.16.194:5002/api/users/login', {
         method: 'PUT',
         headers: {
@@ -23,34 +56,33 @@ const Login: React.FC = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
+      const data = await response.json();
+  
+      // Verifica a resposta da tentativa de login
       if (!response.ok) {
         if (response.status === 401) {
           setError({ general: 'Login falhou! Usuário ou senha incorretos.' });
         } else if (response.status >= 500) {
-          setError({ general: 'Login ou senha incorretos.' });
+          setError({ general: 'Erro interno. Tente novamente mais tarde.' });
         } else {
           throw new Error('Ocorreu um erro ao tentar fazer login. Tente novamente mais tarde.');
         }
+        setLoading(false);
         return;
       }
-
-      const data = await response.json();
-      // Armazena o token no localStorage (caso a API retorne um token)
+  
+      // Se chegou aqui, o login foi bem-sucedido
       localStorage.setItem('token', data.token);
-      navigate('/home'); // Redireciona para a Home
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      navigate('/home');
+      // eslint-disable-next-line 
     } catch (error: any) {
-      setError({ general: error.message });
+      console.error('Erro completo:', error);
+      setError({ general: error.message || 'Erro desconhecido. Tente novamente.' });
     } finally {
       setLoading(false);
     }
   };
-
-  // const handleRegisterClick = () => {
-  //   navigate('/registro'); // Substitua '/registro' pela rota da página de registro
-  // };
-
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -112,15 +144,7 @@ const Login: React.FC = () => {
             >
               Entrar
             </button>
-            {/* <button
-              type="button"
-              className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 focus:outline-none"
-              onClick={handleRegisterClick}
-            >
-              Cadastrar-se
-            </button> */}
           </form>
-          
         )}
       </div>
     </div>

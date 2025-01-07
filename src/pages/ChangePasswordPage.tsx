@@ -79,7 +79,7 @@ const ChangePasswordPage = () => {
       if (!response.ok) {
         throw new Error(text || `Erro ao alterar a senha! Status: ${response.status}`);
       }
-      navigate("/home");
+      navigate("/configuracoes");
     })
     .catch((error) => {
       setError(error.message);
