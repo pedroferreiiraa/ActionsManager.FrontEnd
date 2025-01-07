@@ -357,7 +357,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
                 />
                 <button
                   onClick={() => handleSaveConclusionText(selectedAction.id)}
-                  className="w-full bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition"
+                  className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition"
                 >
                   Salvar Texto de Conclusão
                 </button>

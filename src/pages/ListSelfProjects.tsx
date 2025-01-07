@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
-import { FaSearch } from 'react-icons/fa';
+// import { FaSearch } from 'react-icons/fa';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
@@ -31,10 +31,10 @@ const ListSelfProjects: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [searchTerm, ] = useState<string>('');
+    const [pageNumber, ] = useState<number>(1);
     const [, setTotalPages] = useState<number>(1);
-    const [statusFilter, setStatusFilter] = useState<number>(-1); // -1 significa "Todos"
+    const [statusFilter, ] = useState<number>(-1); // -1 significa "Todos"
     const navigate = useNavigate();
 
     // Função para definir as classes de cor com base no status
@@ -145,10 +145,10 @@ const ListSelfProjects: React.FC = () => {
   }, [searchTerm, pageNumber, statusFilter]);
   
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        setPageNumber(1);
-    };
+    // const handleSearch = (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     setPageNumber(1);
+    // };
 
     // const handlePreviousPage = () => {
     //     if (pageNumber > 1) {
@@ -163,10 +163,10 @@ const ListSelfProjects: React.FC = () => {
     //   };
       
 
-    const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setStatusFilter(parseInt(e.target.value));
-        setPageNumber(1);
-    };
+    // const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    //     setStatusFilter(parseInt(e.target.value));
+    //     setPageNumber(1);
+    // };
 
     return (
         <div className="p-8 max-w-4xl mx-auto bg-gray-50 min-h-screen">
@@ -184,14 +184,14 @@ const ListSelfProjects: React.FC = () => {
       <div className="flex justify-start mb-6">
         <button
           onClick={() => navigate("/home")}
-          className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
+          className="bg-blue-600 font-semibold text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
           >
           Voltar    
           </button>
       </div>
 
         {/* Formulário de Busca */}
-        <form onSubmit={handleSearch} className="flex items-center mb-8">
+        {/* <form onSubmit={handleSearch} className="flex items-center mb-8">
           <input
             type="text"
             value={searchTerm}
@@ -208,7 +208,7 @@ const ListSelfProjects: React.FC = () => {
         </form> 
       
         {/* Filtro por Status */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <label htmlFor="statusFilter" className="block text-sm font-semibold text-gray-700 mb-3">
             Filtrar por Status
           </label>
@@ -223,7 +223,7 @@ const ListSelfProjects: React.FC = () => {
             <option value={1}>Em Andamento</option>
             <option value={4}>Concluído</option>
           </select>
-        </div>
+        </div>  */}
       
         {/* Loading Spinner */}
         {loading ? (
@@ -255,7 +255,7 @@ const ListSelfProjects: React.FC = () => {
 
                     <button
                       onClick={() => navigate(`/projeto/${project.id}`)}
-                      className="bg-blue-600 sm:px-4 sm:py-2 px-3 py-2 text-white rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all mt-3 sm:mt-0 sm:ml-4"
+                      className="bg-blue-600 sm:px-4 sm:py-2 font-semibold px-3 py-2 text-white rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all mt-3 sm:mt-0 sm:ml-4"
                     >
                       Ver Detalhes
                     </button>

@@ -134,15 +134,22 @@ const RegisterPage: React.FC = () => {
 
           <div>
             <label className="block text-gray-700">Nível no Sistema</label>
-            <input
-              disabled
-              type="text"
+            <select
+              
               name="role"
               value={formData.role}
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
-              required
-            />
+              required>
+
+            <option value="">Selecione uma opção</option>
+            <option value="Colaborador">Colaborador</option>
+            <option value="Admin">Admin</option>
+            <option value="Líder">Líder</option>
+            </select>
+
+             
+            
           </div>
 
           <div>

@@ -151,7 +151,7 @@ const ListProjects: React.FC = () => {
       <div className="flex justify-start mb-6">
         <button
           onClick={() => navigate("/home")}
-          className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
+          className="bg-blue-600 text-white font-semibold px-3 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all"
           >
           Voltar    
           </button>

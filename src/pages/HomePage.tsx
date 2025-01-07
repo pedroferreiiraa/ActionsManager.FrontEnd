@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import 'tailwindcss/tailwind.css';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { FaChartBar, FaProjectDiagram, FaCheckCircle } from 'react-icons/fa';
 // import { getRole } from '../utils/authUtils';
 
@@ -39,7 +39,7 @@ const decodeJWT = (token: string) => {
 };
 
 const Home = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [actions, setActions] = useState<Action[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -242,12 +242,12 @@ const Home = () => {
                 className="flex flex-col md:flex-row md:justify-between md:items-center py-3 border-b last:border-none"
               >
                 <span className="font-semibold text-base">{project.title}</span>
-                <button
+                {/* <button
                   onClick={() => navigate(`/projeto/${project.id}`)}
                   className="bg-blue-600 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all md:ml-4"
                 >
                   Ver Detalhes
-                </button>
+                </button> */}
               </li>
             ))}
           </ul>

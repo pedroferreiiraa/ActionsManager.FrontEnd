@@ -14,7 +14,7 @@ interface User {
 interface Department {
     id: number;
     name: string;
-    liderId: number;
+    LíderId: number;
     gestorId: number;
     users: User;
 }
@@ -82,14 +82,17 @@ const UpdateUserPage = () => {
 
   const handleSave = () => {
     const token = localStorage.getItem("jwt");
-
+  
+    // Exibe o conteúdo do 'user' para verificar o que está sendo enviado
+    console.log("Dados sendo enviados:", { ...user, id });  // Verificando se o id está presente tanto no corpo quanto na URL
+  
     fetch(`http://192.168.16.194:5002/api/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(user),
+      body: JSON.stringify({ ...user, id }),  // Garantir que o 'id' está incluído no corpo
     })
       .then((response) => {
         if (!response.ok) {
@@ -99,12 +102,13 @@ const UpdateUserPage = () => {
       })
       .then(() => {
         console.log("User updated successfully");
-        navigate("/"); // Redireciona para a página inicial
+        navigate("/configuracoes"); // Redireciona para a página inicial
       })
       .catch((error) => {
         console.error("Error updating user:", error);
       });
   };
+  
 
   if (loading) {
     return <p>Carregando...</p>;
@@ -112,7 +116,14 @@ const UpdateUserPage = () => {
 
   return (
     <div className="p-4 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold text-center mb-6">Atualizar Usuário</h1>
+
+<button
+      onClick={() => navigate(-1)}
+      className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all mt-2"
+    >
+      Voltar
+    </button>
+      <h1 className="text-2xl text-gray-600 text-center mb-6">Atualizar Usuário</h1>
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Nome Completo</label>
@@ -124,16 +135,7 @@ const UpdateUserPage = () => {
             className="w-full px-3 py-2 border rounded"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={user.email}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border rounded"
-          />
-        </div>
+
         <div>
           <label className="block text-sm font-medium">Role</label>
           <select
@@ -145,7 +147,7 @@ const UpdateUserPage = () => {
             <option value="">Selecione uma opção</option>
             <option value="Colaborador">Colaborador</option>
             <option value="Admin">Admin</option>
-            <option value="Lider">Líder</option>
+            <option value="Líder">Líder</option>
           </select>
         </div>
         <div>
@@ -166,7 +168,7 @@ const UpdateUserPage = () => {
         </div>
         <button
           onClick={handleSave}
-          className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+          className="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
         >
           Salvar
         </button>

@@ -20,10 +20,10 @@ const Navbar: React.FC = () => {
   };
 
   const buttonClasses =
-  "bg-blue-600 px-4 py-2 rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all";
+  "bg-blue-600 px-4 py-2 font-semibold rounded-lg shadow hover:bg-blue-700 focus:outline-none transition-all";
 
 const mobileButtonClasses =
-  "block w-52 text-left px-4 py-2 rounded-lg bg-blue-600 ml-10 mt-2 mb-2 focus:outline-none transition-all";
+  "block w-52 text-left px-4 py-2 font-semibold rounded-lg bg-blue-600 ml-10 mt-2 mb-2 focus:outline-none transition-all";
 
   return (
     <div>
@@ -74,7 +74,7 @@ const mobileButtonClasses =
               </button>
               </>
         )}
-        {role === 'Lider' && (
+        {role === 'Líder' && (
           <>
           <button
             onClick={() => navigate('/listar-projetos-setor')}
@@ -118,7 +118,7 @@ const mobileButtonClasses =
         
         <button
           onClick={handleLogout}
-          className="bg-red-600 px-4 py-2 rounded-lg sm:px px-2 sm:py py-1 shadow hover:bg-red-700 focus:outline-none transition-all flex items-center"
+          className="bg-red-600 px-4 py-2 font-semibold rounded-lg sm:px px-2 sm:py py-1 shadow hover:bg-red-700 focus:outline-none transition-all flex items-center"
         >
           {/* <FaSignOutAlt className="inline-block  sm:block hidden" /> */}
           Sair
@@ -151,7 +151,7 @@ const mobileButtonClasses =
       </button>
     </>
   )}
-  {role === 'Lider' && (
+  {role === 'Líder' && (
     <>
     
     <button
