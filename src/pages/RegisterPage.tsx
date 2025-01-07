@@ -81,7 +81,7 @@ const RegisterPage: React.FC = () => {
       }
 
       setShowNotification(true);
-      setTimeout(() => navigate('/login'), 1000); // Redireciona após 1 segundo
+      setTimeout(() => navigate('/home'), 1000); // Redireciona após 1 segundo
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);

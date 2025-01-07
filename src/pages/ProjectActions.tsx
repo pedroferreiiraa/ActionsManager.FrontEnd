@@ -348,11 +348,12 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
             )}
             {selectedAction.status === 4 && !selectedAction.conclusionText && (
               <div className="mb-6">
+                <span className="text-red-600">O texto de conclusão não pode ser salvo vazio</span>
                 <textarea
                   value={conclusionText}
                   onChange={(e) => setConclusionText(e.target.value)}
                   placeholder="Digite o texto de conclusão"
-                  className="w-full p-4 border border-gray-300 rounded-lg mb-4"
+                  className="w-full mt-1 p-4 border border-gray-300 rounded-lg mb-4"
                 />
                 <button
                   onClick={() => handleSaveConclusionText(selectedAction.id)}
@@ -366,6 +367,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
             <button
               onClick={() => handleCloseModal()}
               className="w-full bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition"
+              // navigate('/listar-meus-projetos');
             >
               Fechar
             </button>

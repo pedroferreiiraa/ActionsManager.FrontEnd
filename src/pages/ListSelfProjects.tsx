@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
-import { FaArrowLeft, FaArrowRight, FaSearch } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
@@ -33,7 +33,7 @@ const ListSelfProjects: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [totalPages, setTotalPages] = useState<number>(1);
+    const [, setTotalPages] = useState<number>(1);
     const [statusFilter, setStatusFilter] = useState<number>(-1); // -1 significa "Todos"
     const navigate = useNavigate();
 
@@ -150,17 +150,17 @@ const ListSelfProjects: React.FC = () => {
         setPageNumber(1);
     };
 
-    const handlePreviousPage = () => {
-        if (pageNumber > 1) {
-              setPageNumber(pageNumber - 1);
-          }
-      };
+    // const handlePreviousPage = () => {
+    //     if (pageNumber > 1) {
+    //           setPageNumber(pageNumber - 1);
+    //       }
+    //   };
       
-    const handleNextPage = () => {
-          if (pageNumber < totalPages) {
-              setPageNumber(pageNumber + 1);
-          }
-      };
+    // const handleNextPage = () => {
+    //       if (pageNumber < totalPages) {
+    //           setPageNumber(pageNumber + 1);
+    //       }
+    //   };
       
 
     const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -267,7 +267,7 @@ const ListSelfProjects: React.FC = () => {
 
       
             {/* Paginação */}
-            <div className="flex justify-between items-center mt-6">
+            {/* <div className="flex justify-between items-center mt-6">
             <button
               onClick={handlePreviousPage}
               disabled={pageNumber === 1}
@@ -277,7 +277,7 @@ const ListSelfProjects: React.FC = () => {
             </button>
             
             <span className="text-sm text-gray-600">
-              Página {pageNumber} de {totalPages}
+
             </span>
 
             <button
@@ -287,7 +287,7 @@ const ListSelfProjects: React.FC = () => {
             >
               <FaArrowRight className="text-lg" />
             </button>
-          </div>
+          </div> */}
 
 
           </div>

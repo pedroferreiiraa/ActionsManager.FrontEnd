@@ -27,14 +27,14 @@ const mobileButtonClasses =
 
   return (
     <div>
-      <nav className="bg-gray-100 text-white  p-2 flex items-center align-items justify-between mb-1">
+      <nav className="bg-gray-100 text-white p-2 flex items-center justify-between mb-1">
         <div></div>
         <span onClick={() => navigate('/home')} className="text-lg text-gray-700 font-semibold">
           DoalPlastic
         </span>
 
         {/* Ícone de menu para dispositivos móveis */}
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center">
           <button onClick={handleMenuToggle}>
             {menuOpen ? (
               <FaTimes className="text-black text-2xl" />
@@ -59,15 +59,36 @@ const mobileButtonClasses =
               className={buttonClasses}
             >
                 Listar Projetos
-              </button></>
+              </button>
+              <button
+              onClick={() => navigate('/alterar-senha')}
+              className={buttonClasses}
+            >
+                Alterar senha
+              </button>
+              <button
+              onClick={() => navigate('/configuracoes')}
+              className={buttonClasses}
+            >
+                Configurações
+              </button>
+              </>
         )}
         {role === 'Lider' && (
+          <>
           <button
             onClick={() => navigate('/listar-projetos-setor')}
             className={buttonClasses}
           >
             Listar Projetos do Setor
           </button>
+          <button
+              onClick={() => navigate('/alterar-senha')}
+              className={buttonClasses}
+            >
+                Alterar senha
+              </button>
+          </>
         )}
         {role === 'Colaborador' && (
 
@@ -81,14 +102,23 @@ const mobileButtonClasses =
               className={buttonClasses}
             >
                 Listar Meus Projetos
-              </button></>
+              </button>
+              <button
+              onClick={() => navigate('/alterar-senha')}
+              className={buttonClasses}
+            >
+                Alterar senha
+              </button>
+              
+              </>
+              
         )}
 
         </div>
         
         <button
           onClick={handleLogout}
-          className="bg-red-600 px-4 py-2 rounded-lg  sm:px px-2 sm:py py-1 shadow hover:bg-red-700 focus:outline-none transition-all"
+          className="bg-red-600 px-4 py-2 rounded-lg sm:px px-2 sm:py py-1 shadow hover:bg-red-700 focus:outline-none transition-all flex items-center"
         >
           {/* <FaSignOutAlt className="inline-block  sm:block hidden" /> */}
           Sair
@@ -113,15 +143,31 @@ const mobileButtonClasses =
       >
         Listar Projetos
       </button>
+      <button
+        onClick={() => navigate('/alterar-senha')}
+        className={mobileButtonClasses}
+      >
+        Alterar senha
+      </button>
     </>
   )}
   {role === 'Lider' && (
+    <>
+    
     <button
       onClick={() => navigate('/listar-projetos-setor')}
       className={mobileButtonClasses}
     >
       Listar Projetos do Setor
     </button>
+    <button
+        onClick={() => navigate('/alterar-senha')}
+        className={mobileButtonClasses}
+      >
+        Alterar senha
+      </button>
+    </>
+    
   )}
   {role === 'Colaborador' && (
     <>
@@ -137,6 +183,13 @@ const mobileButtonClasses =
       >
         Adicionar Projeto
       </button>
+      <button
+        onClick={() => navigate('/alterar-senha')}
+        className={mobileButtonClasses}
+      >
+        Alterar senha
+      </button>
+      
     </>
   )}
 </div>

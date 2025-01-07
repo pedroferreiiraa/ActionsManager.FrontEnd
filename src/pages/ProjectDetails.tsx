@@ -374,13 +374,13 @@
     </button>
   </div>
   
-  <div className="flex flex-col lg:flex-row gap-4">
+  <div className="flex flex-col lg:flex-row gap-4 mb-4">
   {project.status === 0 && (
     <button
       onClick={handleStartProject}
-      className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none w-full sm:w-auto"
+      className="bg-blue-500 text-white px-3 py-2  rounded-lg hover:bg-blue-600 focus:outline-none w-48 sm:w-auto"
     >
-      Iniciar Projeto
+      Iniciar
     </button>
   )}
   {project.status === 1 && (
@@ -388,16 +388,16 @@
       <button
         onClick={handleCompleteProject}
         disabled={!allActionsCompleted}
-        className={`px-6 py-3 rounded-lg sm:w-full w-48 focus:outline-none ${
+        className={` py-2 rounded-lg sm:w-full w-48 lg:w-48 focus:outline-none  ${
           allActionsCompleted ? 'bg-green-500 text-white hover:bg-green-600 ' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         }`}
       >
-        Completar Projeto
+        Completar 
       </button>
       
       <button
         onClick={() => navigate(`/projeto/${project.id}/inserir-acao`)}
-        className="bg-blue-500 text-white px-6 py-3 sm:w-full w-48 rounded-lg hover:bg-blue-600 focus:outline-none"
+        className="bg-blue-500 text-white py-2 sm:w-full lg:w-48 w-48 rounded-lg hover:bg-blue-600 focus:outline-none"
       >
         Adicionar Ação
       </button>
@@ -407,15 +407,15 @@
     <>
       <button
         onClick={handleDeleteProject}
-        className="bg-red-500 text-white px-6 py-3 sm:w-full w-48 rounded-lg hover:bg-red-600 focus:outline-none"
+        className="bg-red-500 text-white  py-2 sm:w-full lg:w-48 w-48 rounded-lg hover:bg-red-600 focus:outline-none"
       >
-        Deletar Projeto
+        Deletar 
       </button>
       <button
         onClick={handleUpdateProjectNavigation}
-        className="bg-yellow-500 text-white px-6 py-3 sm:w-full w-48 rounded-lg hover:bg-yellow-600 focus:outline-none"
+        className="bg-yellow-500 text-white py-2 sm:w-full lg:w-48 w-48 rounded-lg hover:bg-yellow-600 focus:outline-none"
       >
-        Atualizar Projeto
+        Atualizar 
       </button>
     </>
   )}
@@ -504,7 +504,7 @@
           <button
             type="button"
             onClick={() => handleSaveConclusionText(project.id, conclusionText)}
-            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
+            className="bg-blue-500 text-white px-3 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
           >
             Salvar Texto de Conclusão
           </button>
@@ -512,7 +512,7 @@
       ) : (
         <button
           onClick={() => setShowConclusionEditor(true)}
-          className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
+          className="bg-blue-500 text-white px-3 py-3 rounded-lg hover:bg-blue-600 focus:outline-none"
         >
           Adicionar Texto de Conclusão
         </button>

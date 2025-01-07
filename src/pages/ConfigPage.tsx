@@ -1,0 +1,194 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+interface User {
+  id: number;
+  fullName: string;
+  email: string;
+  role: string;
+  isDeleted: boolean;
+  departmentId: number;
+}
+
+interface Department {
+    id: number;
+    name: string;
+    liderId: number;
+    gestorId: number;
+    users: User[];
+}
+
+
+const decodeJWT = (token: string) => {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+
+    return JSON.parse(jsonPayload);
+  } catch {
+    console.error("Invalid token");
+    return null;
+  }
+};
+
+const ConfigPage = () => {
+  const [, setUsers] = useState<User[]>([]);
+  const [groupedUsers, setGroupedUsers] = useState<Record<string, User[]>>({});
+  const [expandedDepartments, setExpandedDepartments] = useState<Record<string, boolean>>({}); // Estado do accordion
+  const [, setUserId] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+
+  const fetchUsers = () => {
+    const token = localStorage.getItem("jwt");
+    fetch("http://192.168.16.194:5002/api/users", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data?.data && Array.isArray(data.data)) {
+          setUsers(data.data);
+          groupUsersByDepartment(data.data);
+        } else {
+          console.error("Unexpected data format:", data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching users:", error);
+      });
+  };
+
+  const groupUsersByDepartment = (users: User[]) => {
+    const grouped = users.reduce((acc: Record<string, User[]>, user) => {
+      const key = user.departmentId || "Sem Departamento";
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(user);
+      return acc;
+    }, {});
+    setGroupedUsers(grouped);
+  };
+
+  const deleteUser = (id: number) => {
+    const token = localStorage.getItem("jwt");
+
+    fetch(`http://192.168.16.194:5002/api/users/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        console.log("User deleted successfully");
+        fetchUsers();
+      })
+      .catch((error) => {
+        console.error("Error deleting user:", error);
+      });
+  };
+
+  const handleUpdateRedirect = (id: number) => {
+    navigate(`/update-user/${id}`); // Redireciona para a página de update
+  };
+
+  const toggleDepartment = (departmentId: string) => {
+    setExpandedDepartments((prevState) => ({
+      ...prevState,
+      [departmentId]: !prevState[departmentId],
+    }));
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      const decoded = decodeJWT(token);
+      setUserId(
+        decoded?.[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ] || null
+      );
+    }
+    fetchUsers();
+  }, []);
+
+  
+
+  return (
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold text-center mb-6">Gerenciamento de Usuários</h1>
+      {Object.keys(groupedUsers).map((departmentId) => {
+        const usersInDepartment = groupedUsers[departmentId] as User[];
+        const isExpanded = expandedDepartments[departmentId] || false;
+
+        return (
+          <div
+            key={departmentId}
+            className="border rounded-lg shadow-sm mb-4 overflow-hidden"
+          >
+            <button
+              onClick={() => toggleDepartment(departmentId)}
+              className="flex justify-between items-center w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <h2 className="text-lg font-medium">
+                {departmentId === "Sem Departamento"
+                  ? "Sem Departamento"
+                  : `Departamento ${departmentId}`}
+              </h2>
+              <span className="text-gray-500">{isExpanded ? "▲" : "▼"}</span>
+            </button>
+            {isExpanded && (
+              <ul className="px-4 py-2 bg-white">
+                {usersInDepartment.map((user: User) => (
+                  <li
+                    key={user.id}
+                    className="flex justify-between items-center py-2 border-b last:border-none"
+                  >
+                    <span>
+                      <strong>{user.fullName}</strong> 
+                    </span>
+                    <div className="space-x-2">
+                      <button
+                        onClick={() => handleUpdateRedirect(user.id)}
+                        className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
+                      >
+                        Atualizar
+                      </button>
+                      <button
+                        onClick={() => deleteUser(user.id)}
+                        className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+
+export default ConfigPage;

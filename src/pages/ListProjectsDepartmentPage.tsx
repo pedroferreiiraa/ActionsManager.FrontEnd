@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
-import { FaSearch } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaSearch } from 'react-icons/fa';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
@@ -110,7 +110,7 @@ const ListProjectsDepartment: React.FC = () => {
               const departmentData: Department = departmentResponse.data;
               setDepartmentName(departmentData.name || "Departamento não identificado");
   
-              const url = `http://192.168.16.194:5002/api/projects/departments/${departmentId}?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+              const url = `http://192.168.16.194:5002/api/projects/departmentProjects/${departmentId}?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
   
               const response = await fetch(url, {
                   method: 'GET',
@@ -183,6 +183,7 @@ const ListProjectsDepartment: React.FC = () => {
 
     return (
         <div className="p-8 max-w-4xl mx-auto bg-gray-50 min-h-screen">
+          
         {/* Botão Adicionar Projeto */}
         {/* <div className="flex justify-start mb-6">
           <button
@@ -218,7 +219,9 @@ const ListProjectsDepartment: React.FC = () => {
           >
             <FaSearch />
           </button>
+        
         </form> 
+      
       
         {/* Filtro por Status */}
         <div className="mb-6">
@@ -281,23 +284,23 @@ const ListProjectsDepartment: React.FC = () => {
       
             {/* Paginação */}
             <div className="flex justify-between items-center mt-6">
-              <button
-                onClick={handlePreviousPage}
-                disabled={pageNumber === 1}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
-              >
-                Página Anterior
-              </button>
+            <button
+              onClick={handlePreviousPage}
+              disabled={pageNumber === 1}
+              className="bg-gray-300 text-gray-700 px-3 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
+            >
+              <FaArrowLeft className="text-lg" />
+            </button>
               <span className="text-sm text-gray-600">
                 Página {pageNumber} de {totalPages}
               </span>
               <button
-                onClick={handleNextPage}
-                disabled={pageNumber === totalPages}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
-              >
-                Próxima Página
-              </button>
+              onClick={handleNextPage}
+              disabled={pageNumber === totalPages}
+              className="bg-gray-300 text-gray-700 px-3 py-2 rounded-lg shadow disabled:opacity-50 focus:outline-none hover:bg-gray-400 transition-all"
+            >
+              <FaArrowRight className="text-lg" />
+            </button>
             </div>
           </div>
         )}

@@ -12,6 +12,8 @@ import UpdateProjectPage from './pages/UpdateProjectPage';
 import RegisterPage from './pages/RegisterPage';
 import ListProjectsDepartment from './pages/ListProjectsDepartmentPage';
 import ListSelfProjects from './pages/ListSelfProjects';
+import ConfigPage from './pages/ConfigPage';
+import UpdateUserPage from './pages/UpdateUserPage';
 // Layout para rotas que terão a Navbar
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
   <>
@@ -109,7 +111,22 @@ const App: React.FC = () => {
           </Layout>
       } 
       />
-
+        <Route 
+        path="/configuracoes" 
+        element={
+          <Layout >
+            <ConfigPage />
+          </Layout>
+      } 
+      />
+        <Route 
+        path="/update-user/:id" 
+        element={
+          <Layout >
+            <UpdateUserPage />
+          </Layout>
+      } 
+      />
 
       </Routes>
     </Router>
