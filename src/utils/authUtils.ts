@@ -20,6 +20,25 @@ export const getToken = (): string | null => {
     }
   };
   
+  export const getUserIdFromToken = (token: string): string | null => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+  
+      const decoded = JSON.parse(jsonPayload);
+      return decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || null;
+    } catch {
+      console.error('Invalid token');
+      return null;
+    }
+  };
+
   // Obtém o papel do usuário a partir do token
   export const getRole = (): string | null => {
     const token = getToken();

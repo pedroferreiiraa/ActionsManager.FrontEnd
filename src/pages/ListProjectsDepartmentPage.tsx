@@ -113,7 +113,6 @@ const ListProjectsDepartment: React.FC = () => {
               const url = `http://192.168.16.194:5002/api/projects/departments/${departmentId}?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
   
 
-              console.log(departmentId);
               const response = await fetch(url, {
                   method: 'GET',
                   headers: {
@@ -185,7 +184,6 @@ const ListProjectsDepartment: React.FC = () => {
 
     return (
         <div className="p-8 max-w-4xl mx-auto bg-gray-50 min-h-screen">
-          
         {/* Botão Adicionar Projeto */}
         {/* <div className="flex justify-start mb-6">
           <button

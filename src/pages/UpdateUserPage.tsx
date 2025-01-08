@@ -143,10 +143,12 @@ const UpdateUserPage = () => {
             onChange={handleInputChange}
             className="w-full px-3 py-2 border rounded"
           >
-            <option value="">Selecione uma opção</option>
+            <option disabled value="">Selecione uma opção</option>
             <option value="Colaborador">Colaborador</option>
             <option value="Admin">Admin</option>
             <option value="Lider">Líder</option>
+            <option value="Gestor">Gestor</option>
+
           </select>
         </div>
         <div>

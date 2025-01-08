@@ -142,14 +142,12 @@ const RegisterPage: React.FC = () => {
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
               required>
 
-            <option value="">Selecione uma opção</option>
+            <option disabled value="">Selecione uma opção</option>
             <option value="Colaborador">Colaborador</option>
             <option value="Admin">Admin</option>
             <option value="Líder">Líder</option>
+            <option value="Gestor">Gestor</option>
             </select>
-
-             
-            
           </div>
 
           <div>

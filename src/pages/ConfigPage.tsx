@@ -129,7 +129,11 @@ const ConfigPage = () => {
   };
 
   const handleUpdateRedirect = (id: number) => {
-    navigate(`/update-user/${id}`); // Redireciona para a página de update
+    navigate(`/atualizar-usuario/${id}`); // Redireciona para a página de update
+  };
+
+  const handleUpdateDepartmentRedirect = (departmentId: number) => {
+    navigate(`/atualizar-departamento/${departmentId}`); // Redireciona para a página de update do departamento
   };
 
   const toggleDepartment = (departmentId: string) => {
@@ -153,16 +157,15 @@ const ConfigPage = () => {
   }, []);
 
   
-
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl text-gray-600 text-center mb-6">Gerenciamento de Usuários</h1>
       {Object.keys(groupedUsers).map((departmentId) => {
         const usersInDepartment = groupedUsers[departmentId] as User[];
         const isExpanded = expandedDepartments[departmentId] || false;
-
+  
         const departmentName = departmentNameMap[parseInt(departmentId)];
-
+  
         return (
           <div
             key={departmentId}
@@ -172,31 +175,42 @@ const ConfigPage = () => {
               onClick={() => toggleDepartment(departmentId)}
               className="flex justify-between items-center w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-               <h2 className="text-lg font-medium">
+              <h2 className="text-lg font-medium">
                 {departmentName || "Sem Departamento"}
               </h2>
               <span className="text-gray-500">{isExpanded ? "▲" : "▼"}</span>
             </button>
             {isExpanded && (
               <ul className="px-4 py-2 bg-white">
+                <li className="flex justify-between items-center py-2 border-b last:border-none">
+                  
+                  <div className="space-x-2">
+                    <button
+                      onClick={() => handleUpdateDepartmentRedirect(parseInt(departmentId))}
+                      className="px-3 py-1 text-md text-white bg-green-600 rounded hover:bg-green-700"
+                    >
+                      Atualizar Departamento
+                    </button>
+                  </div>
+                </li>
                 {usersInDepartment.map((user: User) => (
                   <li
                     key={user.id}
                     className="flex justify-between items-center py-2 border-b last:border-none"
                   >
                     <span>
-                      <strong>{user.fullName}</strong> 
+                      <strong>{user.fullName}</strong>
                     </span>
                     <div className="space-x-2">
                       <button
                         onClick={() => handleUpdateRedirect(user.id)}
-                        className="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+                        className="px-3 py-1 text-md text-white bg-blue-600 rounded hover:bg-blue-700"
                       >
                         Atualizar
                       </button>
                       <button
                         onClick={() => deleteUser(user.id)}
-                        className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+                        className="px-3 py-1 text-md text-white bg-red-500 rounded hover:bg-red-600"
                       >
                         Excluir
                       </button>
