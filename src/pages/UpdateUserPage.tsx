@@ -24,7 +24,6 @@ const UpdateUserPage = () => {
   const navigate = useNavigate(); // Para redirecionar após salvar
   const [user, setUser] = useState({
     fullName: "",
-    email: "",
     role: "",
     departmentId: 0,
   });
@@ -147,7 +146,7 @@ const UpdateUserPage = () => {
             <option value="">Selecione uma opção</option>
             <option value="Colaborador">Colaborador</option>
             <option value="Admin">Admin</option>
-            <option value="Líder">Líder</option>
+            <option value="Lider">Líder</option>
           </select>
         </div>
         <div>

@@ -74,7 +74,7 @@ const mobileButtonClasses =
               </button>
               </>
         )}
-        {role === 'Líder' && (
+        {role === 'Lider' && (
           <>
           <button
             onClick={() => navigate('/listar-projetos-setor')}
@@ -151,7 +151,7 @@ const mobileButtonClasses =
       </button>
     </>
   )}
-  {role === 'Líder' && (
+  {role === 'Lider' && (
     <>
     
     <button

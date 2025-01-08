@@ -110,8 +110,10 @@ const ListProjectsDepartment: React.FC = () => {
               const departmentData: Department = departmentResponse.data;
               setDepartmentName(departmentData.name || "Departamento não identificado");
   
-              const url = `http://192.168.16.194:5002/api/projects/departmentProjects/${departmentId}?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+              const url = `http://192.168.16.194:5002/api/projects/departments/${departmentId}?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
   
+
+              console.log(departmentId);
               const response = await fetch(url, {
                   method: 'GET',
                   headers: {
