@@ -70,7 +70,7 @@
 
     const fetchUserDetails = async (userId: number) => {
       try {
-        const userUrl = `http://192.168.16.194:5002/api/users/${userId}`;
+        const userUrl = `http://192.168.16.240:5002/api/users/${userId}`;
         const userResponse = await fetch(userUrl, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -97,7 +97,7 @@
           throw new Error('Token de autorização não encontrado.');
         }
   
-        const projectUrl = `http://192.168.16.194:5002/api/projects/${id}`;
+        const projectUrl = `http://192.168.16.240:5002/api/projects/${id}`;
         const projectResponse = await fetch(projectUrl, {
           method: 'GET',
           headers: {
@@ -132,7 +132,7 @@
   
     const fetchActionStatus = async (actionId: number): Promise<Action | null> => {
       try {
-        const actionUrl = `http://192.168.16.194:5002/api/actions/${actionId}`;
+        const actionUrl = `http://192.168.16.240:5002/api/actions/${actionId}`;
         const actionResponse = await fetch(actionUrl, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -179,7 +179,7 @@
             throw new Error('Token de autorização não encontrado.');
           }
     
-          const url = `http://192.168.16.194:5002/api/projects/${project.id}/start`;
+          const url = `http://192.168.16.240:5002/api/projects/${project.id}/start`;
     
           const body = {
             id: project.id,
@@ -232,7 +232,7 @@
             throw new Error('Token de autorização não encontrado.');
           }
   
-          const url = `http://192.168.16.194:5002/api/projects/${project.id}/complete`;
+          const url = `http://192.168.16.240:5002/api/projects/${project.id}/complete`;
           const body = {
             id: project.id,
             command: "CompleteProject",
@@ -275,7 +275,7 @@
           throw new Error('Token de autorização não encontrado.');
         }
   
-        const url = `http://192.168.16.194:5002/api/projects/${projectId}/conclusion`;
+        const url = `http://192.168.16.240:5002/api/projects/${projectId}/conclusion`;
   
         const response = await fetch(url, {
           method: 'PATCH',
@@ -311,7 +311,7 @@
           throw new Error('Token de autorização não encontrado.');
         }
     
-        const url = `http://192.168.16.194:5002/api/projects/${project.id}/delete`;
+        const url = `http://192.168.16.240:5002/api/projects/${project.id}/delete`;
     
         const body = {
           id: project.id,

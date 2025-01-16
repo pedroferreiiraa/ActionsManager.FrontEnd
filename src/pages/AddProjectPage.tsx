@@ -89,7 +89,7 @@ const AddProject = () => {
 
        navigate('/home')
 
-        fetch('http://192.168.16.194:5002/api/projects', {
+        fetch('http://192.168.16.240:5002/api/projects', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

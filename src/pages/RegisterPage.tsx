@@ -31,7 +31,7 @@ const RegisterPage: React.FC = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch('http://192.168.16.194:5002/api/departments', {
+        const response = await fetch('http://192.168.16.240:5002/api/departments', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.16.194:5002/api/users', {
+      const response = await fetch('http://192.168.16.240:5002/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

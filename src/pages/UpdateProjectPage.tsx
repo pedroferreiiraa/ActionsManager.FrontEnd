@@ -60,7 +60,7 @@ const UpdateProjectPage: React.FC = () => {
           throw new Error('ID do projeto deve ser um número válido.');
         }
 
-        const projectUrl = `http://192.168.16.194:5002/api/projects/${projectId}`;
+        const projectUrl = `http://192.168.16.240:5002/api/projects/${projectId}`;
        
 
         const projectResponse = await fetch(projectUrl, {
@@ -110,7 +110,7 @@ const UpdateProjectPage: React.FC = () => {
           throw new Error('Token de autorização não encontrado.');
         }
 
-        const updateUrl = `http://192.168.16.194:5002/api/projects/${project.id}`;
+        const updateUrl = `http://192.168.16.240:5002/api/projects/${project.id}`;
         const updatedProject = {
           id: project.id, // Atualizado para garantir que seja enviado como número, conforme a API espera
           title: title,

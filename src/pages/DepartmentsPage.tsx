@@ -66,7 +66,7 @@ const DepartmentsPage = () => {
 
         // Faz a requisição para buscar todos os departamentos
         const response = await fetch(
-          `http://192.168.16.194:5002/api/departments`,
+          `http://192.168.16.240:5002/api/departments`,
           {
             method: "GET",
             headers: {

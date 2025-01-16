@@ -64,7 +64,7 @@ const ListProjects: React.FC = () => {
               setLoading(true);
               setError('');
   
-              const url = `http://192.168.16.194:5002/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+              const url = `http://192.168.16.240:5002/api/projects?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
   
               const response = await fetch(url, {
                   method: 'GET',

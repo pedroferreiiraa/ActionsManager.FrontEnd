@@ -26,7 +26,7 @@ const UpdateDepartmentPage = () => {
   useEffect(() => {
     const fetchDepartment = async () => {
       const token = localStorage.getItem("jwt");
-      const response = await fetch(`http://192.168.16.194:5002/api/departments/${id}`, {
+      const response = await fetch(`http://192.168.16.240:5002/api/departments/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const UpdateDepartmentPage = () => {
 
     const fetchUsers = async () => {
       const token = localStorage.getItem("jwt");
-      const response = await fetch("http://192.168.16.194:5002/api/users", {
+      const response = await fetch("http://192.168.16.240:5002/api/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const UpdateDepartmentPage = () => {
 
     console.log("Dados sendo atualizados:", updatedDepartment); // Log dos dados atualizados
 
-    const response = await fetch(`http://192.168.16.194:5002/api/departments/${id}`, {
+    const response = await fetch(`http://192.168.16.240:5002/api/departments/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

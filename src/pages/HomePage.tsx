@@ -60,7 +60,7 @@ const Home = () => {
 
       while (pageNumber <= totalPages) {
         try {
-          const response = await fetch(`http://192.168.16.194:5002/api/projects?pageNumber=${pageNumber}&pageSize=10`, {
+          const response = await fetch(`http://192.168.16.240:5002/api/projects?pageNumber=${pageNumber}&pageSize=10`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const Home = () => {
     fetchAllProjects();
 
     // Buscar ações
-    fetch('http://192.168.16.194:5002/api/actions', {
+    fetch('http://192.168.16.240:5002/api/actions', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ const Home = () => {
       });
 
     // Buscar usuários
-    fetch('http://192.168.16.194:5002/api/users', {
+    fetch('http://192.168.16.240:5002/api/users', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

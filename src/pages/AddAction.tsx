@@ -84,7 +84,7 @@ const AddActionForm: React.FC = () => {
         throw new Error('Token de autorização não encontrado.');
       }
 
-      const createActionResponse = await fetch('http://192.168.16.194:5002/api/actions', {
+      const createActionResponse = await fetch('http://192.168.16.240:5002/api/actions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const AddActionForm: React.FC = () => {
 
       const createdAction = await createActionResponse.json();
 
-      const associateUrl = `http://192.168.16.194:5002/api/projects/${projectId}/actions`;
+      const associateUrl = `http://192.168.16.240:5002/api/projects/${projectId}/actions`;
       const associateResponse = await fetch(associateUrl, {
         method: 'POST',
         headers: {

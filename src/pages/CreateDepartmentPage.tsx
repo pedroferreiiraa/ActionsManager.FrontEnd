@@ -18,7 +18,7 @@ const CreateDepartmentPage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem("jwt");
-      const response = await fetch("http://192.168.16.194:5002/api/users", {
+      const response = await fetch("http://192.168.16.240:5002/api/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,7 @@ const CreateDepartmentPage = () => {
 
     console.log("Dados sendo enviados:", newDepartment); // Log dos dados enviados
 
-    const response = await fetch("http://192.168.16.194:5002/api/departments", {
+    const response = await fetch("http://192.168.16.240:5002/api/departments", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

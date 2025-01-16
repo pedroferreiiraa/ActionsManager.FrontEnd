@@ -97,7 +97,7 @@ const ListProjectsDepartment: React.FC = () => {
               }
         
               // Fetch informações do usuário para obter o ID do departamento
-              const userResponse = await axios.get(`http://192.168.16.194:5002/api/users/${leaderId}`);
+              const userResponse = await axios.get(`http://192.168.16.240:5002/api/users/${leaderId}`);
               const userData: User = userResponse.data;
               const departmentId = userData.departmentId;
         
@@ -106,11 +106,11 @@ const ListProjectsDepartment: React.FC = () => {
               }
         
               // Fetch nome do departamento
-              const departmentResponse = await axios.get(`http://192.168.16.194:5002/api/departments/${departmentId}`);
+              const departmentResponse = await axios.get(`http://192.168.16.240:5002/api/departments/${departmentId}`);
               const departmentData: Department = departmentResponse.data;
               setDepartmentName(departmentData.name || "Departamento não identificado");
   
-              const url = `http://192.168.16.194:5002/api/projects/departments/${departmentId}?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
+              const url = `http://192.168.16.240:5002/api/projects/departments/${departmentId}?search=${searchTerm}&pageNumber=${pageNumber}&pageSize=10&status=${statusFilter}`;
   
 
               const response = await fetch(url, {

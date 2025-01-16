@@ -33,7 +33,7 @@ const UpdateUserPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
 
-    fetch('http://192.168.16.194:5002/api/departments', {
+    fetch('http://192.168.16.240:5002/api/departments', {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const UpdateUserPage = () => {
         });
   
 
-    fetch(`http://192.168.16.194:5002/api/users/${id}`, {
+    fetch(`http://192.168.16.240:5002/api/users/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +85,7 @@ const UpdateUserPage = () => {
     // Exibe o conteúdo do 'user' para verificar o que está sendo enviado
     console.log("Dados sendo enviados:", { ...user, id });  // Verificando se o id está presente tanto no corpo quanto na URL
   
-    fetch(`http://192.168.16.194:5002/api/users/${id}`, {
+    fetch(`http://192.168.16.240:5002/api/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

@@ -27,7 +27,7 @@ const Navbar: React.FC = () => {
         }
 
         // Faz a requisição para buscar as informações do usuário logado
-        const response = await axios.get(`http://192.168.16.194:5002/api/users/${userId}`, {
+        const response = await axios.get(`http://192.168.16.240:5002/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
