@@ -17,6 +17,7 @@ import UpdateUserPage from './pages/UpdateUserPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import UpdateDepartmentPage from './pages/UpdateDepartmentPage';
 import DepartmentsPage from './pages/DepartmentsPage';
+import CreateDepartmentPage from './pages/CreateDepartmentPage';
 // Layout para rotas que terão a Navbar
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
   <>
@@ -143,6 +144,14 @@ const App: React.FC = () => {
         element={
           <Layout >
             <UpdateDepartmentPage />
+          </Layout>
+      } 
+      />
+        <Route 
+        path="/criar-departamento" 
+        element={
+          <Layout >
+            <CreateDepartmentPage />
           </Layout>
       } 
       />

@@ -14,6 +14,7 @@ const decodeJWT = (token: string) => {
     );
 
     return JSON.parse(jsonPayload);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     console.error('Token inválido');
     return null;

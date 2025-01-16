@@ -11,13 +11,12 @@ interface User {
 }
 
 interface Department {
-    id: number;
-    name: string;
-    liderId: number;
-    gestorId: number;
-    users: User[];
+  id: number;
+  name: string;
+  liderId: number;
+  gestorId: number;
+  users: User[];
 }
-
 
 const decodeJWT = (token: string) => {
   try {
@@ -40,7 +39,7 @@ const decodeJWT = (token: string) => {
 const ConfigPage = () => {
   const [, setUsers] = useState<User[]>([]);
   const [groupedUsers, setGroupedUsers] = useState<Record<string, User[]>>({});
-  const [expandedDepartments, setExpandedDepartments] = useState<Record<string, boolean>>({}); // Estado do accordion
+  const [expandedDepartments, setExpandedDepartments] = useState<Record<string, boolean>>({});
   const [, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -74,9 +73,8 @@ const ConfigPage = () => {
   };
 
   useEffect(() => {
-    // Simulando a chamada da API
     const fetchData = async () => {
-      const response = await fetch('http://192.168.16.194:5002/api/departments'); // Seu endpoint de departamentos
+      const response = await fetch("http://192.168.16.194:5002/api/departments");
       const data = await response.json();
       setDepartments(data.data);
     };
@@ -84,16 +82,14 @@ const ConfigPage = () => {
     fetchData();
   }, []);
 
-  // Criando um mapeamento de departmentId para o nome do departamento
   const departmentNameMap = departments.reduce((map, department) => {
     map[department.id] = department.name;
     return map;
   }, {} as { [key: number]: string });
 
-
   const groupUsersByDepartment = (users: User[]) => {
     const grouped = users
-      .filter((user) => !user.isDeleted) // Filtra os usuários onde isDeleted não é true
+      .filter((user) => !user.isDeleted)
       .reduce((acc: Record<string, User[]>, user) => {
         const key = user.departmentId || "Sem Departamento";
         if (!acc[key]) {
@@ -107,14 +103,14 @@ const ConfigPage = () => {
 
   const deleteUser = (id: number) => {
     const token = localStorage.getItem("jwt");
-  
+
     fetch(`http://192.168.16.194:5002/api/users/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ id }) // Envia o id no corpo da requisição
+      body: JSON.stringify({ id }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -129,11 +125,15 @@ const ConfigPage = () => {
   };
 
   const handleUpdateRedirect = (id: number) => {
-    navigate(`/atualizar-usuario/${id}`); // Redireciona para a página de update
+    navigate(`/atualizar-usuario/${id}`);
   };
 
   const handleUpdateDepartmentRedirect = (departmentId: number) => {
-    navigate(`/atualizar-departamento/${departmentId}`); // Redireciona para a página de update do departamento
+    navigate(`/atualizar-departamento/${departmentId}`);
+  };
+
+  const handleCreateDepartmentRedirect = () => {
+    navigate(`/criar-departamento`);
   };
 
   const toggleDepartment = (departmentId: string) => {
@@ -156,16 +156,17 @@ const ConfigPage = () => {
     fetchUsers();
   }, []);
 
-  
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl text-gray-600 text-center mb-6">Gerenciamento de Usuários</h1>
+      <p 
+      onClick={handleCreateDepartmentRedirect}
+      className="px-3 py-1 text-md text-white bg-blue-600 rounded hover:bg-blue-700 w-52 mb-2">Adicionar departamento</p>
       {Object.keys(groupedUsers).map((departmentId) => {
         const usersInDepartment = groupedUsers[departmentId] as User[];
         const isExpanded = expandedDepartments[departmentId] || false;
-  
         const departmentName = departmentNameMap[parseInt(departmentId)];
-  
+
         return (
           <div
             key={departmentId}
@@ -183,7 +184,6 @@ const ConfigPage = () => {
             {isExpanded && (
               <ul className="px-4 py-2 bg-white">
                 <li className="flex justify-between items-center py-2 border-b last:border-none">
-                  
                   <div className="space-x-2">
                     <button
                       onClick={() => handleUpdateDepartmentRedirect(parseInt(departmentId))}
@@ -193,30 +193,38 @@ const ConfigPage = () => {
                     </button>
                   </div>
                 </li>
-                {usersInDepartment.map((user: User) => (
-                  <li
-                    key={user.id}
-                    className="flex justify-between items-center py-2 border-b last:border-none"
-                  >
-                    <span>
-                      <strong>{user.fullName}</strong>
-                    </span>
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleUpdateRedirect(user.id)}
-                        className="px-3 py-1 text-md text-white bg-blue-600 rounded hover:bg-blue-700"
-                      >
-                        Atualizar
-                      </button>
-                      <button
-                        onClick={() => deleteUser(user.id)}
-                        className="px-3 py-1 text-md text-white bg-red-500 rounded hover:bg-red-600"
-                      >
-                        Excluir
-                      </button>
-                    </div>
-                  </li>
-                ))}
+                {usersInDepartment.map((user: User) => {
+                  const department = departments.find((dept) => dept.id === user.departmentId);
+                  const isLeader = department?.liderId === user.id;
+                  const isManager = department?.gestorId === user.id;
+
+                  return (
+                    <li
+                      key={user.id}
+                      className="flex justify-between items-center py-2 border-b last:border-none"
+                    >
+                      <span>
+                        <strong>{user.fullName}</strong>
+                        {isLeader && <span className="ml-2 text-sm font-semibold text-green-600">Líder</span>}
+                        {isManager && <span className="ml-2 text-sm font-semibold text-blue-600">Gestor</span>}
+                      </span>
+                      <div className="space-x-2">
+                        <button
+                          onClick={() => handleUpdateRedirect(user.id)}
+                          className="px-3 py-1 text-md text-white bg-blue-600 rounded hover:bg-blue-700"
+                        >
+                          Atualizar
+                        </button>
+                        <button
+                          onClick={() => deleteUser(user.id)}
+                          className="px-3 py-1 text-md text-white bg-red-500 rounded hover:bg-red-600"
+                        >
+                          Excluir
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -225,6 +233,5 @@ const ConfigPage = () => {
     </div>
   );
 };
-
 
 export default ConfigPage;

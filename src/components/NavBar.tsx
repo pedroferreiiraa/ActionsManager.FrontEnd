@@ -92,9 +92,9 @@ const Navbar: React.FC = () => {
               <button onClick={() => navigate('/listar-projetos')} className={buttonClasses}>
                 Listar Projetos
               </button>
-              <button onClick={() => navigate('/alterar-senha')} className={buttonClasses}>
+              {/* <button onClick={() => navigate('/alterar-senha')} className={buttonClasses}>
                 Alterar senha
-              </button>
+              </button> */}
               <button onClick={() => navigate('/configuracoes')} className={buttonClasses}>
                 Configurações
               </button>
@@ -108,9 +108,9 @@ const Navbar: React.FC = () => {
               >
                 Listar Projetos do Setor
               </button>
-              <button onClick={() => navigate('/alterar-senha')} className={buttonClasses}>
+              {/* <button onClick={() => navigate('/alterar-senha')} className={buttonClasses}>
                 Alterar senha
-              </button>
+              </button> */}
             </>
           )}
           {role === 'Gestor' && (
@@ -118,9 +118,9 @@ const Navbar: React.FC = () => {
               <button onClick={() => navigate(`/departments`)} className={buttonClasses}>
                 Listar setores
               </button>
-              <button onClick={() => navigate('/alterar-senha')} className={buttonClasses}>
+              {/* <button onClick={() => navigate('/alterar-senha')} className={buttonClasses}>
                 Alterar senha
-              </button>
+              </button> */}
             </>
           )}
           {role === 'Colaborador' && (
@@ -131,9 +131,9 @@ const Navbar: React.FC = () => {
               <button onClick={() => navigate('/listar-meus-projetos')} className={buttonClasses}>
                 Listar Meus Projetos
               </button>
-              <button onClick={() => navigate('/alterar-senha')} className={buttonClasses}>
+              {/* <button onClick={() => navigate('/alterar-senha')} className={buttonClasses}>
                 Alterar senha
-              </button>
+              </button> */}
             </>
           )}
         </div>
@@ -157,9 +157,9 @@ const Navbar: React.FC = () => {
             <button onClick={() => navigate('/listar-projetos')} className={mobileButtonClasses}>
               Listar Projetos
             </button>
-            <button onClick={() => navigate('/alterar-senha')} className={mobileButtonClasses}>
+            {/* <button onClick={() => navigate('/alterar-senha')} className={mobileButtonClasses}>
               Alterar senha
-            </button>
+            </button> */}
           </>
         )}
         {role === 'Lider' && (
@@ -170,9 +170,9 @@ const Navbar: React.FC = () => {
             >
               Listar Projetos do Setor
             </button>
-            <button onClick={() => navigate('/alterar-senha')} className={mobileButtonClasses}>
+            {/* <button onClick={() => navigate('/alterar-senha')} className={mobileButtonClasses}>
               Alterar senha
-            </button>
+            </button> */}
           </>
         )}
         {role === 'Colaborador' && (
@@ -183,9 +183,16 @@ const Navbar: React.FC = () => {
             <button onClick={() => navigate('/adicionar-projeto')} className={mobileButtonClasses}>
               Adicionar Projeto
             </button>
-            <button onClick={() => navigate('/alterar-senha')} className={mobileButtonClasses}>
+            {/* <button onClick={() => navigate('/alterar-senha')} className={mobileButtonClasses}>
               Alterar senha
-            </button>
+            </button> */}
+          </>
+        )}
+        {role === 'Gestor' && (
+          <>
+           <button onClick={() => navigate(`/departments`)} className={mobileButtonClasses}>
+                Listar setores
+              </button>
           </>
         )}
       </div>

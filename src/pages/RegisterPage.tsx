@@ -7,7 +7,7 @@ interface RegisterFormData {
   password: string;
   email: string;
   role: string;
-  departmentId: number;
+  departmentId: number | null; // Alterado para aceitar null
 }
 
 interface Department {
@@ -22,7 +22,7 @@ const RegisterPage: React.FC = () => {
     password: '',
     email: '',
     role: 'Colaborador',
-    departmentId: 0,
+    departmentId: null, // Valor inicial como null
   });
   const [error, setError] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState<boolean>(false);
@@ -53,9 +53,13 @@ const RegisterPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+
+    // Trata o valor do departmentId
+    const updatedValue = name === 'departmentId' ? (value === "null" ? null : Number(value)) : value;
+
     setFormData({
       ...formData,
-      [name]: name === 'departmentId' ? Number(value) : value,
+      [name]: updatedValue,
     });
   };
 
@@ -135,18 +139,17 @@ const RegisterPage: React.FC = () => {
           <div>
             <label className="block text-gray-700">Nível no Sistema</label>
             <select
-              
               name="role"
               value={formData.role}
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
-              required>
-
-            <option disabled value="">Selecione uma opção</option>
-            <option value="Colaborador">Colaborador</option>
-            <option value="Admin">Admin</option>
-            <option value="Líder">Líder</option>
-            <option value="Gestor">Gestor</option>
+              required
+            >
+              <option disabled value="">Selecione uma opção</option>
+              <option value="Colaborador">Colaborador</option>
+              <option value="Admin">Admin</option>
+              <option value="Lider">Líder</option>
+              <option value="Gestor">Gestor</option>
             </select>
           </div>
 
@@ -154,17 +157,18 @@ const RegisterPage: React.FC = () => {
             <label className="block text-gray-700">Departamento</label>
             <select
               name="departmentId"
-              value={formData.departmentId}
+              value={formData.departmentId === null ? "null" : formData.departmentId} // Trata o valor null
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
               required
             >
-              <option value="">Selecione o Departamento</option>
+              <option disabled value="">Selecione o Departamento</option>
               {departments.map((dept) => (
                 <option key={dept.id} value={dept.id}>
                   {dept.name}
                 </option>
               ))}
+              <option value="null">Sem departamento</option> {/* Opção para null */}
             </select>
           </div>
 
@@ -176,7 +180,6 @@ const RegisterPage: React.FC = () => {
           </button>
         </form>
 
-        
         {showNotification && (
           <Notification
             message="Registro realizado com sucesso!"
