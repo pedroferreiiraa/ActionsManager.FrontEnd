@@ -160,6 +160,9 @@ const Navbar: React.FC = () => {
             {/* <button onClick={() => navigate('/alterar-senha')} className={mobileButtonClasses}>
               Alterar senha
             </button> */}
+            <button onClick={() => navigate('/configuracoes')} className={mobileButtonClasses}>
+                Configurações
+              </button>
           </>
         )}
         {role === 'Lider' && (
