@@ -18,7 +18,7 @@ const CreateDepartmentPage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem("jwt");
-      const response = await fetch("http://192.168.16.240:5002/api/users", {
+      const response = await fetch("http://192.168.16.194:5002/api/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -28,7 +28,7 @@ const CreateDepartmentPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setUsers(data.data.filter((user: User) => user.role === "Lider" || user.role === "Gestor"));
+        setUsers(data.data);
         setLoading(false);
       } else {
         console.error("Erro ao buscar usuários");
@@ -50,9 +50,10 @@ const CreateDepartmentPage = () => {
       gestorId: gestorId || null,
     };
 
+
     console.log("Dados sendo enviados:", newDepartment); // Log dos dados enviados
 
-    const response = await fetch("http://192.168.16.240:5002/api/departments", {
+    const response = await fetch("http://192.168.16.194:5002/api/departments", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,6 +71,8 @@ const CreateDepartmentPage = () => {
       console.error("Detalhes do erro:", errorData);
     }
   };
+
+  
 
   if (loading) {
     return <div>Carregando...</div>;
@@ -98,7 +101,6 @@ const CreateDepartmentPage = () => {
           >
             <option value="">Selecione um líder</option>
             {users
-              .filter((user) => user.role === "Lider")
               .map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.fullName}
@@ -115,7 +117,6 @@ const CreateDepartmentPage = () => {
           >
             <option value="">Selecione um gestor</option>
             {users
-              .filter((user) => user.role === "Gestor")
               .map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.fullName}

@@ -91,11 +91,11 @@ const ListSelfProjects: React.FC = () => {
               }
         
               // Fetch informações do usuário para obter o ID do departamento
-              const userResponse = await axios.get(`http://192.168.16.240:5002/api/users/${tokenId}`);
+              const userResponse = await axios.get(`http://192.168.16.194:5002/api/users/${tokenId}`);
               const userData: User = userResponse.data;
               const userId = userData.id
   
-              const url = `http://192.168.16.240:5002/api/projects/self/${userId}
+              const url = `http://192.168.16.194:5002/api/projects/self/${userId}
 
 `;
   

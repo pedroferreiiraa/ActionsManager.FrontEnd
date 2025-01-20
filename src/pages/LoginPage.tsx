@@ -16,7 +16,7 @@ const Login: React.FC = () => {
   
     try {
       // Fetch para verificar se o usuário existe
-      const userResponse = await fetch(`http://192.168.16.240:5002/api/users?email=${email}`, {
+      const userResponse = await fetch(`http://192.168.16.194:5002/api/users?email=${email}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const Login: React.FC = () => {
       }
   
       // Faz o login se o usuário não estiver deletado
-      const response = await fetch('http://192.168.16.240:5002/api/users/login', {
+      const response = await fetch('http://192.168.16.194:5002/api/users/login', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

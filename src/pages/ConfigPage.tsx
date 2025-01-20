@@ -46,7 +46,7 @@ const ConfigPage = () => {
 
   const fetchUsers = () => {
     const token = localStorage.getItem("jwt");
-    fetch("http://192.168.16.240:5002/api/users", {
+    fetch("http://192.168.16.194:5002/api/users", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -74,7 +74,7 @@ const ConfigPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("http://192.168.16.240:5002/api/departments");
+      const response = await fetch("http://192.168.16.194:5002/api/departments");
       const data = await response.json();
       setDepartments(data.data);
     };
@@ -104,7 +104,7 @@ const ConfigPage = () => {
   const deleteUser = (id: number) => {
     const token = localStorage.getItem("jwt");
 
-    fetch(`http://192.168.16.240:5002/api/users/${id}`, {
+    fetch(`http://192.168.16.194:5002/api/users/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

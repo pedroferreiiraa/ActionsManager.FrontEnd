@@ -62,7 +62,7 @@ const ChangePasswordPage = () => {
       setLoading(false);
       return;
     }
-    fetch("http://192.168.16.240:5002/api/users/change-password", {
+    fetch("http://192.168.16.194:5002/api/users/change-password", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

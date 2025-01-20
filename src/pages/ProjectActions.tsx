@@ -54,7 +54,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
         throw new Error('Token de autorização não encontrado.');
       }
 
-      const actionUrl = `http://192.168.16.240:5002/api/actions/`;
+      const actionUrl = `http://192.168.16.194:5002/api/actions/`;
       const response = await fetch(actionUrl, {
         method: 'GET',
         headers: {
@@ -100,7 +100,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
   const handleStartAction = async () => {
     if (selectedAction) {
       try {
-        const url = `http://192.168.16.240:5002/api/actions/${selectedAction.id}/start`;
+        const url = `http://192.168.16.194:5002/api/actions/${selectedAction.id}/start`;
 
         const body = {
           id: selectedAction.id,
@@ -152,7 +152,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
           throw new Error('Token de autorização não encontrado.');
         }
 
-        const url = `http://192.168.16.240:5002/api/actions/${selectedAction.id}/complete`;
+        const url = `http://192.168.16.194:5002/api/actions/${selectedAction.id}/complete`;
 
         const body = {
           id: selectedAction.id,
@@ -209,7 +209,7 @@ const ProjectActions: React.FC<ProjectActionsProps> = ({ projectId, token }) => 
         throw new Error('Token de autorização não encontrado.');
       }
 
-      const url = `http://192.168.16.240:5002/api/actions/${actionId}/conclusion`;
+      const url = `http://192.168.16.194:5002/api/actions/${actionId}/conclusion`;
 
       const body = {
         actionId: actionId,
